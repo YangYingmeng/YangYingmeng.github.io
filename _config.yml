@@ -5,9 +5,9 @@ baseurl:
 url:  https://yangyingmeng.github.io/
 date_format: "ordinal"
 title: 脚踏代码浪
-subtitle: "个人微信号：如有任何错误, 可及时联系作者"
+subtitle: "个人微信号：杨小猛"
 description: "杨应猛的个人博客"
-keywords: 杨应猛, 脚踏代码浪, 敲编古今愁
+keywords: 杨应猛, 脚踏代码浪, 敲遍古今愁
 timezone: Asia/Shanghai
 encoding: "utf-8"
 # 页面左下角显示的年份
@@ -28,7 +28,7 @@ components:
     # 不蒜子访问统计
     busuanzi:
         enabled: false
-        start_date: 2020-05-03
+        start_date: 2023-05-27
     # My Popular Repositories
     side_bar_repo:
         enabled: true
@@ -40,7 +40,7 @@ components:
     # 修改图片请替换 assets/images/qrcode.jpg
     qrcode:
         enabled: true
-        image_alt: 闷骚的程序员
+        image_alt: 杨小猛
     # 维基索引页使用哪种视图，支持 列表（list）/分类（cate）
     wiki:
         view: cate
@@ -57,12 +57,12 @@ highlight_theme: github
 # ---------------- #
 #      Author      #
 # ---------------- #
-author: Zhuang Ma
+author: Yingmeng Yang
 organization: 
 organization_url: 
-github_username: mzlogin
-location: Wuhan, China
-email: chumpma@gmail.com
+github_username: YangYingmeng
+location: ShangHai, China
+email: yym769212304@163.com
 
 # ---------------- #
 #    Navigation    #
@@ -146,14 +146,14 @@ comments_provider: giscus
 # !!!Important!!! Please modify infos below to yours
 # disqus 配置参考：https://disqus.com
 disqus:
-    username: 
+    username: %yangyingmeng.blog%
 # gitment 配置参考：https://imsun.net/posts/gitment-introduction/
 gitment:
-    owner: mzlogin
+    owner: YangYingmeng
     repo: blog-comments
     oauth:
-        client_id: d2e1cbbd298958076462
-        client_secret: b42a4178e5fd4a7cf63189ef4b1453b05c375709
+        client_id: c10a7c829c2fa9afbeb6
+        client_secret: 4160bf56f17d2617be5b2bf9c7521f748e5a5f52
 # gitalk 配置参考：https://github.com/gitalk/gitalk#install
 gitalk:
     owner: mzlogin
@@ -167,11 +167,34 @@ utterances:
 beaudar:
     repo: mzlogin/blog-comments
 # giscus 配置参考：https://giscus.app/zh-CN
+# <script src="https://giscus.app/client.js"
+#         data-repo="YangYingmeng/blog-comments"
+#         data-repo-id="R_kgDOJoJs9Q"
+#         data-category="Announcements"
+#         data-category-id="DIC_kwDOJoJs9c4CWxsI"
+#         data-mapping="url"
+#         data-strict="1"
+#         data-reactions-enabled="1"
+#         data-emit-metadata="0"
+#         data-input-position="bottom"
+#         data-theme="light"
+#         data-lang="zh-CN"
+#         data-loading="lazy"
+#         crossorigin="anonymous"
+#         async>
+# </script>
 giscus:
-    repo: mzlogin/blog-comments
-    repo-id: MDEwOlJlcG9zaXRvcnk5MzEyNzkxNw==
+    repo: YangYingmeng/blog-comments
+    repo-id: R_kgDOJoJs9Q
     category: Announcements
-    category-id: DIC_kwDOBY0E7c4CRtg9
+    category-id: DIC_kwDOJoJs9c4CWxsI
+    mapping: url
+    strict: 1
+    emitMetadata: 0
+    inputPosition: bottom
+    theme: light
+    lang: zh-CN
+    loading: lazy
 # 在使用其它评论组件时可点击显示 Disqus
 lazy_load_disqus : false
 
