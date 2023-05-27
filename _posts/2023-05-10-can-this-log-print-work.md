@@ -108,3 +108,20 @@ protected void logMessage(final String fqcn, final Level level, final Marker mar
 
 - AI 生成的代码可以按期望效果打印；
 - 如果有比占位符多的非 Throwable 类型参数，会被忽略掉。
+
+<script src="https://giscus.app/client.js"
+        data-repo="YangYingmeng/blog-comments"
+        data-repo-id="R_kgDOJoJs9Q"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOJoJs9c4CWxsI"
+        data-mapping="url"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
