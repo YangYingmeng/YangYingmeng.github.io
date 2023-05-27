@@ -5,9 +5,9 @@ baseurl:
 url:  https://yangyingmeng.github.io/
 date_format: "ordinal"
 title: 脚踏代码浪
-subtitle: "公众号：暂无"
+subtitle: "个人微信号：如有任何错误, 可及时联系作者"
 description: "杨应猛的个人博客"
-keywords: 杨应猛, 双脚踏破代码浪, 一键敲编古今愁
+keywords: 杨应猛, 脚踏代码浪, 敲编古今愁
 timezone: Asia/Shanghai
 encoding: "utf-8"
 # 页面左下角显示的年份
