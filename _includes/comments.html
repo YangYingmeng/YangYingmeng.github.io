@@ -127,6 +127,22 @@
         </script>
   {% when 'giscus' %}
         <script src="https://giscus.app/client.js"
+                data-repo="YangYingmeng/blog-comments"
+                data-repo-id="R_kgDOJoJs9Q"
+                data-category="Announcements"
+                data-category-id="DIC_kwDOJoJs9c4CWxsI"
+                data-mapping="url"
+                data-strict="1"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="light"
+                data-lang="zh-CN"
+                data-loading="lazy"
+                crossorigin="anonymous"
+                async>
+        </script>
+        <!-- <script src="https://giscus.app/client.js"
                 data-repo="{{ site.giscus.repo }}"
                 data-repo-id="{{ site.giscus.repo-id }}"
                 data-category="{{ site.giscus.category }}"
@@ -141,6 +157,6 @@
                 data-loading="lazy"
                 crossorigin="anonymous"
                 async>
-        </script>
+        </script> -->
   {% endcase %}
 {% endif %}
