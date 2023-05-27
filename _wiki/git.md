@@ -51,7 +51,7 @@ keywords: Git, 版本控制
    pathnameencoding = utf-8
 ```
 
-参考 <http://zengrong.net/post/1249.htm>
+参考 <http://yangyingmeng.github.io/>
 
 ### 如何处理本地有更改需要从服务器合入新代码的情况？
 
