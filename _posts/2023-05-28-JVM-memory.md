@@ -1,6 +1,14 @@
+---
+layout: post
+title: JVM内存模型
+categories: [Java JVM]
+description: JVM内存模型
+keywords: Java JVM
+---
+
 # 1. JVM内存模型图
 
-![jvm内存模型](/images/posts/jvm内存模型-1685255669831.png)
+![jvm内存模型](../images/posts/jvm内存模型-1685255669831.png)
 
 # 2. 运行时数据区
 
