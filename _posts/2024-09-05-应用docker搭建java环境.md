@@ -3,7 +3,7 @@ layout: post
 title: docker
 categories: [云原生]
 description: 应用docker搭建java环境
-keywords: docker 腾讯云 centos7
+keywords: docker, 腾讯云, centos7
 ---
 
 # 一、Docker 生态架构及部署
