@@ -10,7 +10,7 @@ keywords: docker, 腾讯云, centos7
 
 ## 1.1 生态架构
 
-![image-20240905094604485](../images/posts/image-20240905094604485.png)
+![image-20240905094604485](/images/posts/image-20240905094604485.png)
 
 
 
@@ -76,7 +76,7 @@ Docker镜像, 把应用运行环境及计算资源打包方式生成可再用于
 ExecStartPost=/sbin/iptables -P FORWARD ACCEPT
 ```
 
-![image-20240905104455719](../images/posts/image-20240905104455719.png)
+![image-20240905104455719](/images/posts/image-20240905104455719.png)
 
 ### 2.1.4 启动Docker服务并查看已安装版本
 
