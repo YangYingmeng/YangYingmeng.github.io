@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="一、领域驱动设计-理论篇" />
+    <meta name="hexo-theme-A4" content="v1.9.7" />
+    <link rel="alternate icon" type="image/webp" href="/img/avatar.png">
+    <title>Ethan-逐道日记 | true</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+ 
+         <!--注意：首页既不是post也不是page-->
+        
+        
+        
+<link rel="stylesheet" href="/css/ui.css">
+ 
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+    
+   
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+   
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+    
+    
+        <style>
+            .index-main{
+                max-width:  1200px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    
+    
+    
+    <body>
+        <script src="/js/darkmode-js.min.js"></script>
+        
+        <script>
+            const options = {
+                bottom: '40px', // default: '32px'
+                right: 'unset', // default: '32px'
+                left: '42px', // default: 'unset'
+                time: '0.3s', // default: '0.3s'
+                mixColor: '#fff', // default: '#fff'
+                backgroundColor: ' #e4e4e4 ',  // default: '#fff'
+                buttonColorDark: '#100f2c',  // default: '#100f2c'
+                buttonColorLight: '#fff', // default: '#fff'
+                saveInCookies: true, // default: true,
+                label: '🌓', // default: ''
+                autoMatchOsTheme: true // default: true
+            }
+            const darkmode = new Darkmode(options);
+            darkmode.showWidget();
+        </script>
+        
+        
+            <div class="left-toc-container">
+                <nav id="toc" class="bs-docs-sidebar"></nav>
+            </div>
+        
+        <div class="paper">
+            
+            
+            
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+    <div class="index-header-line" >
+        <div id="hiddenHeaderContentArray" style="display: none;">
+            
+            
+            
+                <span>The only way to achieve the impossible is to believe it is possible.</span>
+            
+        </div>
+        <span id="targetSpan"></span>
+    </div>
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        <img 
+            alt="^-^" 
+            cache-control="max-age=86400" 
+            class="header-img" 
+            src="/img/avatar.png" 
+        />
+        <div class="header-content">
+            <a class="logo" href="/">Ethan-逐道日记</a> 
+            <span class="description">逐有道无术之道</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+            
+                <li><a href="/categories/">分类</a></li>
+            
+        
+    </ul>
+</div> 
+        
+                    
+                    
+
+                    
+                    
+                    
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    一、领域驱动设计-理论篇
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2025-02-26</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：4.8k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：16分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+        
+        <div class=".article-gallery"><h2 id="1-什么是-DDD（领域驱动设计）？"><a href="#1-什么是-DDD（领域驱动设计）？" class="headerlink" title="1. 什么是 DDD（领域驱动设计）？"></a>1. 什么是 DDD（领域驱动设计）？</h2><p>DDD（领域驱动设计）是一种软件开发方法，<strong>它专注于创建与业务领域紧密相关的模型，目的是确保软件能有效解决实际的业务问题。</strong></p>
+<h2 id="2-DDD-的核心理念"><a href="#2-DDD-的核心理念" class="headerlink" title="2. DDD 的核心理念"></a>2. DDD 的核心理念</h2><ol>
+<li><p><strong>领域模型（Domain Model）</strong><br>领域模型是对特定业务领域的准确描述，它包括业务中的一些关键概念，例如：</p>
+<ul>
+<li><strong>实体（Entities）</strong>：具有独立身份和生命周期的对象。</li>
+<li><strong>值对象（Value Objects）</strong>：没有独立身份的对象，通常用来描述某些属性。</li>
+<li><strong>服务（Services）</strong>：处理业务逻辑的功能。</li>
+<li><strong>聚合（Aggregates）</strong>：一组相关的对象，它们作为一个整体来处理。</li>
+<li><strong>聚合根（Aggregate Roots）</strong>：聚合中的入口，外部只能通过它来操作聚合内部的对象。</li>
+</ul>
+<p>领域模型是 DDD 的核心，能够帮助开发团队准确理解和实现业务需求。</p>
+</li>
+<li><p><strong>统一语言（Ubiquitous Language）</strong><br>统一语言是开发团队和业务专家共同使用的语言，确保整个项目中表达的概念和术语始终一致。它减少了沟通障碍，让业务和技术人员对问题的理解保持一致。</p>
+</li>
+<li><p><strong>限界上下文（Bounded Context）</strong><br>限界上下文是系统的明确边界，在这个边界内使用统一的模型和语言。不同的限界上下文可能有不同的模型，它们之间通过上下文映射（Context Mapping）进行交互和集成。例如，订单管理系统和库存管理系统可能是两个不同的限界上下文，它们通过共享信息来合作。</p>
+</li>
+<li><p><strong>聚合（Aggregate）</strong><br>聚合是一组相关的对象，它们作为一个整体来进行管理和修改。每个聚合都有一个聚合根，它是外部访问聚合内部对象的唯一入口。聚合确保了数据的一致性和完整性。</p>
+</li>
+<li><p><strong>领域服务（Domain Services）</strong><br>当某些行为不自然属于任何实体或值对象时，这些行为可以被定义为领域服务。领域服务通常表示领域中的一些操作或业务逻辑。</p>
+</li>
+<li><p><strong>应用服务（Application Services）</strong><br>应用服务是软件的一部分，它们协调领域对象来执行任务。它们负责应用程序的工作流程，但不包含业务规则或知识。</p>
+</li>
+<li><p><strong>基础设施（Infrastructure）</strong><br>基础设施包括为领域模型提供持久化机制（如数据库）、消息传递、应用程序的配置等技术组件。</p>
+</li>
+<li><p><strong>领域事件（Domain Events）</strong><br>领域事件是领域中发生的有意义的业务事件，它们可以触发其他子系统的反应或流程。</p>
+</li>
+</ol>
+<h2 id="3-DDD-的目标"><a href="#3-DDD-的目标" class="headerlink" title="3. DDD 的目标"></a>3. DDD 的目标</h2><p>DDD 的目标是通过将软件的关注点集中在核心领域上，并通过丰富的领域模型来管理复杂性，从而提高软件的质量和维护性。DDD 强调与业务专家的紧密合作，以确保软件解决方案能够准确反映业务需求。通过这种方法，软件开发团队可以创建出更加灵活、可扩展且与业务紧密结合的系统。</p>
+<hr>
+<h2 id="4-软件设计方法"><a href="#4-软件设计方法" class="headerlink" title="4. 软件设计方法"></a>4. 软件设计方法</h2><p>DDD 所提到的软件设计方法涵盖了范式、模型、框架、方法论，主要活动包括建模、测试、工程、开发、部署、维护。</p>
+<h3 id="4-1-范式-Paradigms"><a href="#4-1-范式-Paradigms" class="headerlink" title="4.1 范式 (Paradigms)"></a>4.1 <strong>范式 (Paradigms)</strong></h3><p>范式是指软件设计和开发的基本风格或哲学。它通常定义了编程的基本原则和模式。常见的软件设计范式包括：</p>
+<ol>
+<li><strong>结构化编程</strong>：强调程序结构的重要性，使用顺序、选择和循环控制结构。</li>
+<li><strong>面向对象编程 (OOP)</strong>：基于对象的概念，将数据和处理数据的方法封装在一起。</li>
+<li><strong>函数式编程</strong>：将计算视为数学函数的评估，避免状态改变和可变数据。</li>
+<li><strong>事件驱动编程</strong>：以事件为中心，响应用户操作、消息或其他系统事件。</li>
+</ol>
+<h3 id="4-2-模型-Models"><a href="#4-2-模型-Models" class="headerlink" title="4.2 模型 (Models)"></a>4.2 <strong>模型 (Models)</strong></h3><p>模型是对软件系统的抽象表示，用于帮助理解、设计和测试系统。常用的软件设计模型包括：</p>
+<ol>
+<li><strong>UML (统一建模语言)</strong>：一套图形化的建模语言，用于描述、设计和文档化软件项目。</li>
+<li><strong>ER模型 (实体-关系模型)</strong>：用于数据库设计，描述数据的实体及其之间的关系。</li>
+<li><strong>状态机模型</strong>：描述系统可能的状态、事件和在这些事件发生时的转换。</li>
+</ol>
+<h3 id="4-3-框架-Frameworks"><a href="#4-3-框架-Frameworks" class="headerlink" title="4.3 框架 (Frameworks)"></a>4.3 <strong>框架 (Frameworks)</strong></h3><p>框架是一套预先制定的代码库和组件，用于提供软件开发的骨架。框架通常定义了应用程序的结构，提供了一组通用的功能和模式，以便开发者可以专注于实现特定的业务逻辑。例如：</p>
+<ol>
+<li><strong>Spring Framework</strong>：一个用于 Java 应用程序的全面编程和配置模型。</li>
+<li><strong>Ruby on Rails</strong>：一个用于快速开发 Web 应用程序的 Ruby 框架。</li>
+<li><strong>Django</strong>：一个高级 Python Web 框架，鼓励快速开发和干净、实用的设计。</li>
+</ol>
+<h3 id="4-4-方法论-Methodologies"><a href="#4-4-方法论-Methodologies" class="headerlink" title="4.4 方法论 (Methodologies)"></a>4.4 <strong>方法论 (Methodologies)</strong></h3><p>方法论是指一套指导软件开发过程的规则和实践。它包括项目管理、开发流程、团队协作等方面。常见的软件开发方法论有：</p>
+<ol>
+<li><strong>敏捷开发</strong>：一种迭代和增量的开发方法，强调灵活性和客户合作。</li>
+<li><strong>Scrum</strong>：一种敏捷开发框架，用于管理复杂的软件和产品开发。</li>
+<li><strong>瀑布模型</strong>：一种线性顺序的开发方法，将项目分为不同阶段，每个阶段完成后才能进入下一个阶段。</li>
+</ol>
+<h3 id="4-5-主要活动"><a href="#4-5-主要活动" class="headerlink" title="4.5 主要活动"></a>4.5 <strong>主要活动</strong></h3><p>软件设计的主要活动包括：</p>
+<ol>
+<li><strong>建模 (Modeling)</strong> ：通过创建模型来表示系统的不同方面，如使用 UML 图来描述系统架构。</li>
+<li><strong>测试 (Testing)</strong> ：确保软件的质量，包括单元测试、集成测试、系统测试和验收测试。</li>
+<li><strong>工程 (Engineering)</strong> ：应用工程原则和实践来构建软件，包括需求分析、设计、实现和测试。</li>
+<li><strong>开发 (Development)</strong> ：编写代码和实现功能，将设计转化为实际的软件产品。</li>
+<li><strong>部署 (Deployment)</strong> ：将软件发布到生产环境，使其可供用户使用。</li>
+<li><strong>维护 (Maintenance)</strong> ：在软件发布后对其进行更新和改进，修复缺陷，提升性能和适应性。</li>
+</ol>
+<h3 id="4-6-维护-Maintenance"><a href="#4-6-维护-Maintenance" class="headerlink" title="4.6 维护 (Maintenance)"></a>4.6 <strong>维护 (Maintenance)</strong></h3><p>软件维护是在软件发布后进行的活动，包括以下几个方面：</p>
+<ol>
+<li><strong>纠错</strong>：修复软件中发现的缺陷或错误。</li>
+<li><strong>适应性维护</strong>：修改软件以适应环境的变化，如操作系统升级、硬件更换等。</li>
+<li><strong>完善性维护</strong>：增加新功能或提升性能，以满足用户新的或变化的需求。</li>
+<li><strong>预防性维护</strong>：改进软件内部结构，以防止潜在的问题发生，提高软件的可维护性和可扩展性。</li>
+</ol>
+<p>软件维护是一个持续的过程，它确保软件能够长期有效地服务于用户。</p>
+<h2 id="5-DDD（领域驱动设计）的概念"><a href="#5-DDD（领域驱动设计）的概念" class="headerlink" title="5. DDD（领域驱动设计）的概念"></a>5. DDD（领域驱动设计）的概念</h2><p>DDD（领域驱动设计）是一种方法论，旨在通过领域模型来解决复杂的业务问题。下面是关于DDD的一些基础概念和设计思路。</p>
+<h3 id="5-1-贫血模型"><a href="#5-1-贫血模型" class="headerlink" title="5.1 贫血模型"></a>5.1 贫血模型</h3><p>贫血模型是一种设计方式，它指的是领域对象（实体）中只包含数据，没有业务逻辑。所有的业务逻辑通常会被放在**服务层（Service）**中，通过服务层来协调和执行各个功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 贫血模型中的 User 类，仅包含属性以及属性的getter/setter方法</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-2-充血模型"><a href="#5-2-充血模型" class="headerlink" title="5.2 充血模型"></a>5.2 充血模型</h3><p>充血模型，指将对象的属性信息与行为逻辑聚合到一个类中，常用的手段如在对象内提供属于当前对象的信息校验、拼装缓存Key、不含服务接口调用的逻辑处理等，这样的方式可以在使用一个对象时，就顺便拿到这个对象的提供的一系列方法信息，所有使用对象的逻辑方法，都不需要自己再次处理同类逻辑。</p>
+<p>但不要只是把充血模型，仅限于一个类的设计和一个类内的方法设计。充血还可以是整个包结构，一个包下包括了用于实现此包 Service 服务所需的各类零部件（模型、仓储、工厂），也可以被看做充血模型。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 充血模型中的 User 类，包含属性和行为</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">    <span class="comment">// 其他与用户相关的行为可以继续在这个类中实现, 如更新用户年龄</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">updateAge</span><span class="params">(<span class="type">int</span> newAge)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (newAge &gt;= <span class="number">18</span> &amp;&amp; newAge &lt;= <span class="number">120</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.age = newAge;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;年龄不合法&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新用户信息</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">updateUserInfo</span><span class="params">(String newName, <span class="type">int</span> newAge)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = newName;</span><br><span class="line">        updateAge(newAge);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-3-贫血模型-充血模型"><a href="#5-3-贫血模型-充血模型" class="headerlink" title="5.3 贫血模型 -&gt; 充血模型"></a>5.3 贫血模型 -&gt; 充血模型</h3><ol>
+<li>领域对象不再是单纯的数据容器, 还包括了对象的行为</li>
+<li>领域服务不再是纯粹的服务层, 而是帮助协调不同领域对象之间的交互</li>
+<li>数据访问与业务逻辑分离, DAO层的操作不会直接出现在领域对象中, 而是通过仓储层和端口适配器隔离</li>
+<li>领域对象只关心业务逻辑, 不直接与外部系统进行交互, 与外部接口的交互通过端口适配器进行</li>
+</ol>
+<h3 id="5-4-领域模型"><a href="#5-4-领域模型" class="headerlink" title="5.4 领域模型"></a>5.4 领域模型</h3><p>领域模型是基于业务的设计方法，目的是通过抽象业务规则、策略和流程来定义业务领域的核心功能。在领域模型的设计中，系统被拆分成多个<strong>领域模块</strong>，每个模块有明确的边界，称为<strong>界限上下文</strong>。这些领域模块包括：</p>
+<ol>
+<li><strong>领域对象（实体、值对象、聚合等）</strong>：这些对象表示业务领域中的具体概念。</li>
+<li><strong>领域服务</strong>：用于实现领域内的业务逻辑，操作领域对象。</li>
+<li><strong>仓储（Repository）</strong>：提供持久化操作，通常用于数据存储和检索。</li>
+<li><strong>端口适配器（Port）</strong>：用于与外部系统的交互，通常通过接口暴露给外部系统调用</li>
+</ol>
+<h4 id="5-4-1-领域对象：实体、值对象、聚合"><a href="#5-4-1-领域对象：实体、值对象、聚合" class="headerlink" title="5.4.1 领域对象：实体、值对象、聚合"></a>5.4.1 领域对象：实体、值对象、聚合</h4><p>在领域模型中，领域对象是描述业务领域内概念和行为的核心元素。下面详细说明三种常见的领域对象类型：实体、值对象、聚合。</p>
+<h5 id="5-4-1-1-实体（Entity）"><a href="#5-4-1-1-实体（Entity）" class="headerlink" title="5.4.1.1 实体（Entity）"></a>5.4.1.1 实体（Entity）</h5><p>实体是具有唯一标识的业务对象，它不仅包含数据，还包含了与这些数据相关的业务逻辑。实体的核心特点是拥有唯一标识，并且在整个生命周期内保持一致性。</p>
+<ul>
+<li><strong>定义</strong>：实体是具有唯一标识的对象，通常由一个业务上有意义的标识（如用户ID、订单ID）来唯一标识。实体不仅仅包含属性，还包含行为（如方法、业务逻辑等）。</li>
+<li><strong>特征</strong>：<ul>
+<li><strong>唯一标识</strong>：每个实体都有一个唯一标识符，用来区分其他实体。标识符可能是业务领域的一个ID，也可以是数据库中的主键。</li>
+<li><strong>生命周期</strong>：实体有一个明确的生命周期，它可能会被创建、更新、删除等。</li>
+<li><strong>封装业务逻辑</strong>：实体不仅保存数据，还负责与数据相关的业务规则。例如，<code>Order</code> 实体可能包含计算总金额、验证订单状态等方法。</li>
+</ul>
+</li>
+<li><strong>用途</strong>：<ul>
+<li><strong>业务概念</strong>：实体用于表示业务领域中的实际概念，如用户、订单、交易等。</li>
+<li><strong>封装业务规则</strong>：实体会包含业务逻辑和规则，确保对象的行为与状态一致。</li>
+</ul>
+</li>
+</ul>
+<h5 id="5-4-1-2-值对象（Value-Object）"><a href="#5-4-1-2-值对象（Value-Object）" class="headerlink" title="5.4.1.2 值对象（Value Object）"></a>5.4.1.2 值对象（Value Object）</h5><p>值对象是不可变的对象，它没有唯一标识符，通常用于描述领域对象的属性。值对象的状态在整个生命周期内是固定的，任何修改都会通过创建新的实例来实现。</p>
+<ul>
+<li><strong>定义</strong>：值对象用于表示事物的属性集合，并且它们是不可变的，不需要唯一标识符来区分。</li>
+<li><strong>特征</strong>：<ul>
+<li><strong>不可变性</strong>：一旦创建，值对象的状态就不应该改变。修改时需要创建一个新的实例。</li>
+<li><strong>等价性</strong>：值对象的等价性是基于属性值的相等，而不是对象的标识符。</li>
+<li><strong>没有生命周期</strong>：值对象是轻量的，它没有生命周期的概念，不需要维护它的状态。</li>
+</ul>
+</li>
+<li><strong>用途</strong>：<ul>
+<li>用于表示一些无法单独标识的概念，如货币、日期、地址等。</li>
+<li>简化实体的设计，避免重复定义相同的属性。</li>
+</ul>
+</li>
+</ul>
+<h5 id="5-4-1-3-聚合"><a href="#5-4-1-3-聚合" class="headerlink" title="5.4.1.3 聚合"></a>5.4.1.3 聚合</h5><p>聚合是一个由多个<strong>相关实体</strong>和<strong>值对象</strong>组成的集合，<strong>它确保这些对象在一起执行某些业务规则时的一致性</strong>。聚合的核心是<strong>聚合根（Aggregate Root）</strong>，它是外部与聚合交互的唯一入口。聚合通常代表一个业务操作的边界，确保在一个事务内的一致性。</p>
+<ul>
+<li><strong>定义</strong>：聚合是一个包含多个实体和值对象的聚合体，聚合根负责管理这些实体和值对象的生命周期。</li>
+<li><strong>特征</strong>：<ul>
+<li><strong>事务一致性</strong>：聚合内的操作保证数据的一致性，聚合根负责协调聚合内的对象。</li>
+<li><strong>外部访问</strong>：外部系统只能通过聚合根与聚合中的实体进行交互。</li>
+<li><strong>聚合根</strong>：聚合根是聚合中的核心实体，所有对聚合内部实体的操作都必须通过聚合根来进行。</li>
+</ul>
+</li>
+<li><strong>用途</strong>：<ul>
+<li>用于确保一组相关对象在同一个事务中一致。</li>
+<li>保证业务操作的边界清晰，并能够有效维护聚合内部对象的一致性。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 聚合根：Order</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Order</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String orderId;</span><br><span class="line">    <span class="keyword">private</span> List&lt;OrderItem&gt; items;</span><br><span class="line">    <span class="comment">// 通过聚合根提供的方式操作聚合内的实体</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addItem</span><span class="params">(OrderItem item)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.items.add(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">removeItem</span><span class="params">(OrderItem item)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.items.remove(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getTotalAmount</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> items.stream().mapToDouble(OrderItem::getPrice).sum();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 聚合内的实体：OrderItem</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderItem</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String productId;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">double</span> price;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">OrderItem</span><span class="params">(String productId, <span class="type">double</span> price)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.productId = productId;</span><br><span class="line">        <span class="built_in">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="5-4-2-仓储和适配器"><a href="#5-4-2-仓储和适配器" class="headerlink" title="5.4.2 仓储和适配器"></a>5.4.2 仓储和适配器</h4><p>在DDD（领域驱动设计）中，<strong>仓储</strong>和<strong>适配器</strong>的设计帮助解耦了领域层与外部服务的依赖，确保领域服务专注于业务逻辑，而不涉及具体的数据存储或外部系统调用。</p>
+<h5 id="5-4-2-1-仓储-Repository"><a href="#5-4-2-1-仓储-Repository" class="headerlink" title="5.4.2.1 仓储(Repository)"></a>5.4.2.1 仓储(Repository)</h5><p>仓储负责封装数据存取操作，并提供与数据源交互的抽象接口，使得领域层不需要直接处理数据库或其他存储机制的细节, 即DAO层。它的主要作用是：</p>
+<ul>
+<li><strong>封装持久化操作</strong>：提供创建、读取、更新、删除（CRUD）等基本操作。</li>
+<li><strong>领域对象的管理</strong>：将领域对象视为集合，支持查询、过滤等功能。</li>
+<li><strong>数据访问抽象</strong>：通过接口屏蔽具体的存储机制，领域层可以轻松切换不同的数据存储技术。</li>
+<li><strong>领域逻辑与数据存储分离</strong>：保持领域层的纯粹性，提升可测试性。</li>
+</ul>
+<h5 id="5-4-2-2-适配器（Adapter）"><a href="#5-4-2-2-适配器（Adapter）" class="headerlink" title="5.4.2.2 适配器（Adapter）"></a>5.4.2.2 适配器（Adapter）</h5><p>适配器将领域层与外部服务（如数据库、缓存、RPC接口等）解耦。领域层通过定义接口来调用外部服务，具体的实现则由基础设施层提供。适配器负责：</p>
+<ul>
+<li><strong>调用外部服务</strong>：如数据库、缓存、配置中心等。</li>
+<li><strong>实现接口</strong>：基础设施层实现领域层定义的接口，提供所需的功能支持。</li>
+</ul>
+<h5 id="5-4-2-3-设计原则"><a href="#5-4-2-3-设计原则" class="headerlink" title="5.4.2.3 设计原则"></a>5.4.2.3 设计原则</h5><ul>
+<li><strong>解耦</strong>：领域层不直接依赖外部服务，而是通过接口由基础设施层提供实现，遵循依赖倒置原则。</li>
+<li><strong>业务与基础设施分离</strong>：领域层关注业务逻辑，基础设施层负责技术实现，业务和技术实现分离。</li>
+</ul>
+<h3 id="5-5-触发器"><a href="#5-5-触发器" class="headerlink" title="5.5 触发器"></a>5.5 触发器</h3><p>在DDD（领域驱动设计）中，<strong>触发器</strong>是指触发领域业务逻辑执行的机制。触发器的作用是通过外部事件或定时任务等方式启动业务流程，确保领域服务得到正确调用并执行相应的业务操作。触发器的主要目的是将领域逻辑与外部事件或系统交互解耦，让领域层专注于业务逻辑的实现，而不直接依赖外部的事件来源。</p>
+<p><strong>触发器的作用包括：</strong></p>
+<ol>
+<li><strong>外部接口触发</strong>：通过HTTP接口、RPC等对外提供调用入口，当外部系统调用时触发领域服务逻辑。例如，外部系统请求授信逻辑时，触发相关的领域服务进行处理。</li>
+<li><strong>消息监听触发</strong>：通过消息队列（如Kafka、RabbitMQ等）监听特定的消息，收到消息时触发相关的业务逻辑。例如，收到”开户成功”消息时，触发返利优惠券发放逻辑。</li>
+<li><strong>定时任务触发</strong>：通过定时任务（如Cron任务）定期触发某些领域服务的业务处理。例如，定时任务触发信贷计息、过期账户处理等逻辑。</li>
+</ol>
+<h3 id="5-6-领域编排"><a href="#5-6-领域编排" class="headerlink" title="5.6 领域编排"></a>5.6 领域编排</h3><p>在DDD（领域驱动设计）中，<strong>领域编排</strong>指的是在多个领域模块之间进行协调和组织，以实现一个完整的业务流程。</p>
+<p><strong>特点</strong></p>
+<ol>
+<li><strong>领域内事务一致性</strong>：每个领域模块内部的操作应保证数据一致性，即在一个领域模块内部，操作应在事务边界内执行。</li>
+<li><strong>领域外最终一致性</strong>：跨领域的操作需要通过异步通信或其他机制来保证最终一致性。例如，如果某个操作依赖多个领域模块的完成，可以通过消息队列等方式，确保各个领域模块最终完成任务，即使操作是异步进行的。</li>
+<li><strong>领域模块的复用性</strong>：由于领域模块是独立的且解耦的，它们可以根据需要在不同场景下进行复用。在不同的业务需求或流程中，可以选择不同的领域模块进行组合，像搭积木一样灵活拼接，满足不同的业务需求。</li>
+<li><strong>简化编排层的使用</strong>：在小型项目或简单场景下，如果业务流程并不复杂，且领域模块之间的交互较少，可以减少领域编排层，直接让触发器层与领域层进行交互，简化开发过程和减少编码量。但对于大型或复杂项目，领域编排层则显得尤为重要，因为它有助于清晰地定义和管理跨领域的业务流程。</li>
+</ol>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2023-01-01</span>
+            
+                <span>该篇文章被 Ethan</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89/'>
+                            领域驱动设计（DDD）
+                        </a>
+                    
+                </span>
+             
+             
+                <span>归为分类:
+                    
+                    
+                        <a href='/categories/%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95%E8%AE%BA/'>
+                            设计方法论
+                        </a>
+                    
+                </span>
+            
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+                                      
+                    
+                    
+                    <div class="footer">
+    
+        <span> 
+            © 1949-2025 China 
+
+            
+                
+
+            
+                
+                    / <a href="/contact/"> 联系 </a>
+                
+
+            
+                
+                    / <a href="/support/"> 支持 </a>
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>✨&#34;The only way to achieve the impossible is to believe it is possible.&#34; ✨</span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->  
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->  
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>
