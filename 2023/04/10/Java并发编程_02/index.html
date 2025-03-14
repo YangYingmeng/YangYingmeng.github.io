@@ -4,7 +4,7 @@
     <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="list" />
+    <meta name="description" content="二、Java并发编程-并发基础" />
     <meta name="hexo-theme-A4" content="v1.9.7" />
     <link rel="alternate icon" type="image/webp" href="/img/avatar.png">
     <title>Ethan-逐道日记 | true</title>
@@ -121,8 +121,19 @@
             
             
             
-                <div class="shadow-drop-2-top paper-main">
-                     
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+    <div class="index-header-line" >
+        <div id="hiddenHeaderContentArray" style="display: none;">
+            
+            
+            
+                <span>Your only limit is your mind.</span>
+            
+        </div>
+        <span id="targetSpan"></span>
+    </div>
 
 
 <div class="header">
@@ -157,11 +168,7 @@
             
         
             
-                <li><i>
-                    
-                        <a style="color: #4e7dde;" href="/list/">文章</a>
-                    
-                </i></li>
+                <li><a href="/list/">文章</a></li>
             
         
             
@@ -174,83 +181,173 @@
         
     </ul>
 </div> 
-                     <div class="archive-list">
-  <ul class="archive">
-      
+        
+                    
+                    
 
-      <!--文章先按照时间排好序-->
-      
+                    
+                    
+                    
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
 
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    二、Java并发编程-并发基础
+                </div>
+            
+        
+      
+    
 
-      
-      
+    
 
-      
-
-      
-      
-      
-
-      <!--循环遍历文章数组-->
-      
-
-      <!--排序 置顶 文章-->
-      
-
-      <!--先放 置顶 文章-->
-      
-          
-          <li>
-            <span class="archive-date"> &nbsp;&nbsp;&nbsp;TOP
-            </span>
-            <div class="archive-main">
-                <a class="archive-title" href="/2023/04/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_02/">二、Java并发编程-并发基础</a>
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2025-03-14</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：573</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：2分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
             </div>
-          </li>
-      
-          
-          <li>
-            <span class="archive-date"> &nbsp;&nbsp;&nbsp;TOP
-            </span>
-            <div class="archive-main">
-                <a class="archive-title" href="/2023/04/01/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_01/">一、Java并发编程-线程基础</a>
-            </div>
-          </li>
-      
-          
-          <li>
-            <span class="archive-date"> &nbsp;&nbsp;&nbsp;TOP
-            </span>
-            <div class="archive-main">
-                <a class="archive-title" href="/2023/01/01/java%E9%9D%A2%E8%AF%95%E9%A2%98/">一、领域驱动设计-理论篇</a>
-            </div>
-          </li>
-      
-          
-          <li>
-            <span class="archive-date"> &nbsp;&nbsp;&nbsp;TOP
-            </span>
-            <div class="archive-main">
-                <a class="archive-title" href="/2023/01/01/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1_01/">一、领域驱动设计-理论篇</a>
-            </div>
-          </li>
-      
+    
 
-      <!--rough-notation风格效果-->
-      
-
-      <!--文章先按照时间排好序-->
-      
-      
-      <!--再放 最近更新 文章-->
-      
-
-      <!--后放 其他 文章-->
-      
-  </ul>
+    <div class="post-md">
+        
+            
+        
+        <div class=".article-gallery"><h1 id="Java并发编程-并发基础"><a href="#Java并发编程-并发基础" class="headerlink" title="Java并发编程-并发基础"></a>Java并发编程-并发基础</h1><h2 id="1-什么是多线程并发编程"><a href="#1-什么是多线程并发编程" class="headerlink" title="1. 什么是多线程并发编程"></a>1. 什么是多线程并发编程</h2><p>并发: 同一个时间段内多个任务同时都在执行, 并且都没有执行结束(可以理解为由多个单位时间组成的时间段)</p>
+<p>并行: 并行是在单位时间内多个任务同时在执行</p>
+<p>单CPU: 多个任务都是并发执行, CPU会进行任务的调度, 多线程编程会导致频繁切换线程上下文, 没有意义, 如下图4个线程等待单个CPU调度</p>
+<p><a href="/../img/juc/02.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/02.jpg"></a></p>
+<h2 id="2-为什么要进行多线程并发编程"><a href="#2-为什么要进行多线程并发编程" class="headerlink" title="2. 为什么要进行多线程并发编程"></a>2. 为什么要进行多线程并发编程</h2><p>多核CPU意味着每个线程可以使用自己的CPU运行, 减少了单线程上下文切换的开销, 但同时带来处理海量数据以及请求等问题, 这些都对高并发编程有迫切的需求</p>
+<h2 id="3-Java中的线程安全问题"><a href="#3-Java中的线程安全问题" class="headerlink" title="3. Java中的线程安全问题"></a>3. Java中的线程安全问题</h2><p>共享资源: 资源被多个线程持有或者可以被多个线程访问</p>
+<p>线程安全问题是指当多个线程同时读写一个共享资源且没有任何同步措施时, 导致的脏数据或者其它不可见问题</p>
+<p><a href="/../img/juc/03.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/03.jpg"></a></p>
+<p>注意, 读操作并不会引发问题, 至少有一个线程对共享资源进行写操作, 以计数器操作为例</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>t1</th>
+<th>t2</th>
+<th>t3</th>
+<th>t4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ThreadA</td>
+<td>从内存中读取count到A线程</td>
+<td>递增A线程count</td>
+<td>写回主存</td>
+<td></td>
+</tr>
+<tr>
+<td>ThreadB</td>
+<td></td>
+<td>从内存中读取count到B线程</td>
+<td>递增B线程count</td>
+<td>写回主存</td>
+</tr>
+</tbody></table>
+<p>加入count初始值为0<br>t1: A读取count&#x3D;0</p>
+<p>t2: A(count) &#x3D; 1, B读取count&#x3D;0, 因为A线程只是执行写操作并未将count写回内存</p>
+<p>t3: 内存(count&#x3D;1), B(count&#x3D;1)</p>
+<p>t4: 内存(count&#x3D;1)</p>
+<p>执行了2次递增count, 但是 count 的值仍然为1, 这就是共享变量的线程安全问题</p>
+<h2 id="4-Java-中共享变量的内存可见性问题"><a href="#4-Java-中共享变量的内存可见性问题" class="headerlink" title="4. Java 中共享变量的内存可见性问题"></a>4. Java 中共享变量的内存可见性问题</h2><p>如图, 多线程下处理共享变量时Java的内存模型</p>
+<p><a href="/../img/juc/04.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/04.jpg"></a></p>
+<p>Java内存模型规定, 将所有的变量都存放在主内存中, 线程使用时会把主内存中的变量复制到自己的工作空间中, 实际上线程在读写操作时是读写自己内存中的变量</p>
 </div>
-<!--  --> 
-                     <div class="footer">
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2023-04-10</span>
+            
+                <span>该篇文章被 Ethan</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/Java/'>
+                            Java
+                        </a>
+                    
+                        <a href='/tags/JUC/'>
+                            JUC
+                        </a>
+                    
+                </span>
+             
+             
+                <span>归为分类:
+                    
+                    
+                        <a href='/categories/JUC/'>
+                            JUC
+                        </a>
+                    
+                </span>
+            
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2023/04/01/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_01/">一、Java并发编程-线程基础</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+                                      
+                    
+                    
+                    <div class="footer">
     
         <span> 
             © 1949-2025 China 

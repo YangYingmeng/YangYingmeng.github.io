@@ -4,7 +4,7 @@
     <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-    <meta name="description" content="一、Java并发编程-基础篇" />
+    <meta name="description" content="一、Java并发编程-线程基础" />
     <meta name="hexo-theme-A4" content="v1.9.7" />
     <link rel="alternate icon" type="image/webp" href="/img/avatar.png">
     <title>Ethan-逐道日记 | true</title>
@@ -197,7 +197,7 @@
         
             
                 <div class="post-main-title" style="text-align: center;">
-                    一、Java并发编程-基础篇
+                    一、Java并发编程-线程基础
                 </div>
             
         
@@ -239,7 +239,7 @@
         
             
         
-        <div class=".article-gallery"><h1 id="Java并发编程-基础篇"><a href="#Java并发编程-基础篇" class="headerlink" title="Java并发编程-基础篇"></a>Java并发编程-基础篇</h1><h2 id="1-线程基础"><a href="#1-线程基础" class="headerlink" title="1. 线程基础"></a>1. 线程基础</h2><h3 id="1-1-什么是线程？"><a href="#1-1-什么是线程？" class="headerlink" title="1.1 什么是线程？"></a><strong>1.1 什么是线程？</strong></h3><p>在 Java 并发编程中，<strong>线程</strong>和<strong>进程</strong>是核心概念，它们决定了程序的执行方式：</p>
+        <div class=".article-gallery"><h1 id="Java并发编程-线程基础"><a href="#Java并发编程-线程基础" class="headerlink" title="Java并发编程-线程基础"></a>Java并发编程-线程基础</h1><h2 id="1-什么是线程？"><a href="#1-什么是线程？" class="headerlink" title="1 什么是线程？"></a><strong>1 什么是线程？</strong></h2><p>在 Java 并发编程中，<strong>线程</strong>和<strong>进程</strong>是核心概念，它们决定了程序的执行方式：</p>
 <ul>
 <li><strong>进程（Process）</strong>：程序在操作系统中的一次执行活动，是系统进行资源分配和调度的基本单位。每个进程都有独立的内存空间和系统资源。</li>
 <li><strong>线程（Thread）</strong>：线程是进程中的一个执行路径，一个进程至少包含一个线程。<strong>多个线程共享进程的资源</strong>，但每个线程都有自己的运行环境。</li>
@@ -248,7 +248,7 @@
 <p>操作系统在分配资源时，会将资源分配给<strong>进程</strong>，而 <strong>CPU 资源是直接分配给线程的</strong>，因此 <strong>线程才是 CPU 资源分配的基本单位</strong>。</p>
 </blockquote>
 <p>在 Java 中，当我们启动 <code>main</code> 方法时，实际上是启动了一个 <strong>JVM 进程</strong>，其中 <code>main</code> 方法所在的线程被称为<strong>主线程（Main Thread）</strong>。</p>
-<h3 id="1-2-进程与线程的内存结构"><a href="#1-2-进程与线程的内存结构" class="headerlink" title="1.2 进程与线程的内存结构"></a>1.2 进程与线程的内存结构</h3><p><a href="/../img/juc/01.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/01.jpg"></a></p>
+<h2 id="2-进程与线程的内存结构"><a href="#2-进程与线程的内存结构" class="headerlink" title="2 进程与线程的内存结构"></a>2 进程与线程的内存结构</h2><p><a href="/../img/juc/01.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/01.jpg"></a></p>
 <p>从上图可以看出，一个进程可以包含多个线程，并且线程之间共享进程的部分内存结构：</p>
 <table>
 <thead>
@@ -275,7 +275,7 @@
 </tr>
 </tbody></table>
 <p>这些内存区域的划分有助于 JVM 实现高效的并发管理，同时避免线程之间的不必要干扰。</p>
-<h3 id="1-3-线程的基础API"><a href="#1-3-线程的基础API" class="headerlink" title="1.3 线程的基础API"></a>1.3 线程的基础API</h3><h4 id="1-3-1-创建与运行"><a href="#1-3-1-创建与运行" class="headerlink" title="1.3.1 创建与运行"></a>1.3.1 创建与运行</h4><p>在 Java 中，创建线程主要有三种方式：</p>
+<h2 id="3-线程的基础API"><a href="#3-线程的基础API" class="headerlink" title="3 线程的基础API"></a>3 线程的基础API</h2><h3 id="3-1-创建与运行"><a href="#3-1-创建与运行" class="headerlink" title="3.1 创建与运行"></a>3.1 创建与运行</h3><p>在 Java 中，创建线程主要有三种方式：</p>
 <ol>
 <li><p>继承 <code>Thread</code> 类</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">_01CreatThread</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">extendThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;通过继承Thread类创建线程&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">extendThread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">extendThread</span>();</span><br><span class="line">        <span class="comment">// 调用start后, 线程进入就绪态, 等待cpu调度</span></span><br><span class="line">        t1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -311,8 +311,8 @@
 <td>需要 <code>FutureTask</code>，使用稍微复杂</td>
 </tr>
 </tbody></table>
-<h4 id="1-3-2-通知与等待wait-notify"><a href="#1-3-2-通知与等待wait-notify" class="headerlink" title="1.3.2 通知与等待wait()&amp;notify()"></a>1.3.2 通知与等待wait()&amp;notify()</h4><p>每个 Java 对象都内置了监视器锁，<code>wait()</code> 和 <code>notify()</code> 依赖监视器锁来实现线程同步，因此它们是 <code>Object</code> 类的方法。</p>
-<h5 id="1-3-2-1-wait-方法"><a href="#1-3-2-1-wait-方法" class="headerlink" title="1.3.2.1 wait() 方法"></a>1.3.2.1 <code>wait()</code> 方法</h5><p>当一个线程调用共享对象的 <code>wait()</code> 方法时，该线程会进入 <strong>等待状态</strong>（Blocked）。</p>
+<h3 id="3-2-通知与等待wait-notify"><a href="#3-2-通知与等待wait-notify" class="headerlink" title="3.2 通知与等待wait()&amp;notify()"></a>3.2 通知与等待wait()&amp;notify()</h3><p>每个 Java 对象都内置了监视器锁，<code>wait()</code> 和 <code>notify()</code> 依赖监视器锁来实现线程同步，因此它们是 <code>Object</code> 类的方法。</p>
+<h4 id="3-2-1-wait-方法"><a href="#3-2-1-wait-方法" class="headerlink" title="3.2.1 wait() 方法"></a>3.2.1 <code>wait()</code> 方法</h4><p>当一个线程调用共享对象的 <code>wait()</code> 方法时，该线程会进入 <strong>等待状态</strong>（Blocked）。</p>
 <ol>
 <li><p><strong>线程的唤醒方式：</strong></p>
 <ol>
@@ -348,7 +348,7 @@
 <p><a href="/../img/juc/02.png" title="image-20250307102209484" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/02.png" alt="image-20250307102209484"></a></p>
 </li>
 </ol>
-<h5 id="1-3-2-2-wait-long-timeout-wait-long-timeout-int-nanos"><a href="#1-3-2-2-wait-long-timeout-wait-long-timeout-int-nanos" class="headerlink" title="1.3.2.2 wait(long timeout) &#x2F; wait(long timeout, int nanos)"></a>1.3.2.2 wait(long timeout) &#x2F; wait(long timeout, int nanos)</h5><ol>
+<h4 id="3-2-2-wait-long-timeout-wait-long-timeout-int-nanos"><a href="#3-2-2-wait-long-timeout-wait-long-timeout-int-nanos" class="headerlink" title="3.2.2 wait(long timeout) &#x2F; wait(long timeout, int nanos)"></a>3.2.2 wait(long timeout) &#x2F; wait(long timeout, int nanos)</h4><ol>
 <li><p>wait(long timeout)</p>
 <p>该方法允许线程进入挂起状态，并在未被 <code>notify()</code> 唤醒或中断的情况下，超过 <code>timeout</code> 时间后自动恢复执行。</p>
 </li>
@@ -356,7 +356,7 @@
 </li>
 </ol>
 <p>   该方法内部调用 <code>wait(long timeout)</code>，当 <code>nanos &gt; 0</code> 时，会将 <code>timeout</code> 值加 1。</p>
-<h5 id="1-3-2-3-notify-notifyAll"><a href="#1-3-2-3-notify-notifyAll" class="headerlink" title="1.3.2.3 notify() &#x2F; notifyAll()"></a>1.3.2.3 notify() &#x2F; notifyAll()</h5><ol>
+<h4 id="3-2-3-notify-notifyAll"><a href="#3-2-3-notify-notifyAll" class="headerlink" title="3.2.3 notify() &#x2F; notifyAll()"></a>3.2.3 notify() &#x2F; notifyAll()</h4><ol>
 <li><p>notify()</p>
 <p>该方法用于唤醒<strong>一个</strong>在共享变量上调用 <code>wait()</code> 后进入等待状态的线程，并<strong>随机唤醒一个等待线程</strong>。</p>
 </li>
@@ -388,7 +388,7 @@
 </li>
 <li><strong>另一个线程仍然处于等待状态</strong>，因为 <code>notify()</code> <strong>只唤醒一个线程</strong>。</li>
 </ol>
-<h4 id="1-3-3-join"><a href="#1-3-3-join" class="headerlink" title="1.3.3 join()"></a>1.3.3 join()</h4><p>阻塞当前线程, 等待目标线程执行完后, 再继续执行当前线程</p>
+<h3 id="3-3-join"><a href="#3-3-join" class="headerlink" title="3.3 join()"></a>3.3 join()</h3><p>阻塞当前线程, 等待目标线程执行完后, 再继续执行当前线程</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试join()等待线程执行结束</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testJoin</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;child t1 over&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;child t2 over&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动子线程</span></span><br><span class="line">    t1.start();</span><br><span class="line">    t2.start();</span><br><span class="line">    System.out.println(<span class="string">&quot;wait child thread over&quot;</span>);</span><br><span class="line">    t1.join();</span><br><span class="line">    t2.join();</span><br><span class="line">    System.out.println(<span class="string">&quot;all child threads over&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>解释</strong>：</p>
@@ -426,7 +426,7 @@
 </ul>
 </li>
 </ol>
-<h4 id="1-3-4-sleep"><a href="#1-3-4-sleep" class="headerlink" title="1.3.4 sleep()"></a>1.3.4 sleep()</h4><p>静态sleep方法, 可以使调用线程暂时让出指定时间的执行权, 但是该线程所拥有的监视器资源以及锁不会让出, 继续被该线程持有, 超出睡眠时间后该线程会进入就绪态, 等待CPU调度。</p>
+<h3 id="3-4-sleep"><a href="#3-4-sleep" class="headerlink" title="3.4 sleep()"></a>3.4 sleep()</h3><p>静态sleep方法, 可以使调用线程暂时让出指定时间的执行权, 但是该线程所拥有的监视器资源以及锁不会让出, 继续被该线程持有, 超出睡眠时间后该线程会进入就绪态, 等待CPU调度。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSleep</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            lock.lock();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;t1 is in sleep&quot;</span>);</span><br><span class="line">                Thread.sleep(<span class="number">10000</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;t1 is awake&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            lock.lock();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;t2 is in sleep&quot;</span>);</span><br><span class="line">                Thread.sleep(<span class="number">10000</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;t2 is awake&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">        t1.join();</span><br><span class="line">        t2.join();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>解释</strong>：</p>
@@ -437,8 +437,8 @@
 <li><strong>执行顺序</strong>：由于 <code>t1</code> 和 <code>t2</code> 线程在 <code>lock.lock()</code> 阻塞时相互等待，实际表现为先执行完一个线程（打印完 <code>t1 is in sleep</code> 和 <code>t1 is awake</code>），然后才会执行另一个线程。这是因为持有锁的线程在睡眠期间，锁不会释放，导致另一个线程无法执行。</li>
 <li><strong>线程调度</strong>：尽管线程进入了睡眠状态并让出 CPU 执行权，但由于 <code>sleep</code> 并没有释放锁，其他线程无法获得锁并执行，直到当前线程完成睡眠并释放锁。</li>
 </ol>
-<h4 id="1-3-5-yield"><a href="#1-3-5-yield" class="headerlink" title="1.3.5 yield()"></a>1.3.5 yield()</h4><p>Thread类的静态方法, 当一个线程调用该方法时, 表明让出自己的CPU使用权, 转为就绪态, 进入就绪队列等待被调度, CPU会按照优先级选取一个线程进行调度, 也有可能选出原线程。</p>
-<h4 id="1-3-6-线程中断"><a href="#1-3-6-线程中断" class="headerlink" title="1.3.6 线程中断"></a>1.3.6 线程中断</h4><p>Java 的线程中断是一种线程间的协作机制，线程可以通过中断标识进行自我终止，而不会被强制关闭。线程是否终止完全取决于自身的逻辑控制，而非 <code>interrupt()</code> 方法直接停止线程执行。</p>
+<h3 id="3-5-yield"><a href="#3-5-yield" class="headerlink" title="3.5 yield()"></a>3.5 yield()</h3><p>Thread类的静态方法, 当一个线程调用该方法时, 表明让出自己的CPU使用权, 转为就绪态, 进入就绪队列等待被调度, CPU会按照优先级选取一个线程进行调度, 也有可能选出原线程。</p>
+<h3 id="3-6-线程中断"><a href="#3-6-线程中断" class="headerlink" title="3.6 线程中断"></a>3.6 线程中断</h3><p>Java 的线程中断是一种线程间的协作机制，线程可以通过中断标识进行自我终止，而不会被强制关闭。线程是否终止完全取决于自身的逻辑控制，而非 <code>interrupt()</code> 方法直接停止线程执行。</p>
 <ol>
 <li><p><strong>void interrupt()</strong> </p>
 <p>用于设置线程的中断标识，通知线程应当自行处理中断。</p>
@@ -458,8 +458,8 @@
 <li>线程在 <strong>阻塞状态</strong>（如 <code>sleep()</code>、<code>wait()</code>、<code>join()</code> 等）时，若被 <code>interrupt()</code>，将会抛出 <code>InterruptedException</code>，并 <strong>清除</strong> 线程的中断标志。</li>
 <li>因此，在捕获异常后，需要再次设置 <code>Thread.currentThread().interrupt()</code>，确保中断状态得以保留，从而正确终止线程。</li>
 </ul>
-<h4 id="1-3-7-线程上下文切换"><a href="#1-3-7-线程上下文切换" class="headerlink" title="1.3.7 线程上下文切换"></a>1.3.7 线程上下文切换</h4><p>当有优先级更高的线程需要被CPU调度时, 需要保留当前线程的执行现场信息, 再次执行时根据保存的执行现场信息回复执行现场。</p>
-<h4 id="1-3-8-线程死锁"><a href="#1-3-8-线程死锁" class="headerlink" title="1.3.8 线程死锁"></a>1.3.8 线程死锁</h4><ol>
+<h3 id="3-7-线程上下文切换"><a href="#3-7-线程上下文切换" class="headerlink" title="3.7 线程上下文切换"></a>3.7 线程上下文切换</h3><p>当有优先级更高的线程需要被CPU调度时, 需要保留当前线程的执行现场信息, 再次执行时根据保存的执行现场信息回复执行现场。</p>
+<h3 id="3-8-线程死锁"><a href="#3-8-线程死锁" class="headerlink" title="3.8 线程死锁"></a>3.8 线程死锁</h3><ol>
 <li><p><strong>什么是死锁?</strong></p>
 <p>2个及2个以上的线程在执行过程中因争夺资源而互相等待的现象, 在无外力的作用下, 会一直相互等待无法继续运行。</p>
 </li>
@@ -485,7 +485,7 @@
 
 <p><strong>流程分析:</strong></p>
 <p>A线程占有resourceA的监视器锁资源, 睡眠等待B线程占有resourceB的监视器锁资源, 当监视器锁资源被占有时, 该资源将无法被其它线程获取, 当A B线程互相获取对方线程占有资源时就会导致死锁。</p>
-<h4 id="1-3-9-守护线程与用户线程"><a href="#1-3-9-守护线程与用户线程" class="headerlink" title="1.3.9 守护线程与用户线程"></a>1.3.9 守护线程与用户线程</h4><p>在 Java 中，线程分为 <strong>用户线程</strong> 和 <strong>守护线程</strong>。<strong>JVM 只有在所有用户线程都执行完毕后才会退出</strong>，无论是否仍然存在守护线程。<br><strong>代码示例:</strong></p>
+<h3 id="3-9-守护线程与用户线程"><a href="#3-9-守护线程与用户线程" class="headerlink" title="3.9 守护线程与用户线程"></a>3.9 守护线程与用户线程</h3><p>在 Java 中，线程分为 <strong>用户线程</strong> 和 <strong>守护线程</strong>。<strong>JVM 只有在所有用户线程都执行完毕后才会退出</strong>，无论是否仍然存在守护线程。<br><strong>代码示例:</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (; ; ) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 当主线程(用户线程)结束时, 子用户线程一直在运行, JVM不会退出</span></span><br><span class="line">    <span class="comment">// 设置为守护线程后 主线程结束 JVM自动退出</span></span><br><span class="line">    thread.setDaemon(<span class="literal">true</span>);</span><br><span class="line">    thread.start();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>流程分析:</strong></p>
@@ -510,8 +510,8 @@
 <p>JVM并不会等待守护线程执行结束才退出</p>
 </li>
 </ol>
-<h4 id="1-3-10-ThreadLocal"><a href="#1-3-10-ThreadLocal" class="headerlink" title="1.3.10 ThreadLocal"></a>1.3.10 ThreadLocal</h4><p>在多线程环境下，对共享变量的访问可能会导致线程安全问题。常见的解决方案包括加锁或使用 <strong>ThreadLocal</strong> 变量。</p>
-<h5 id="1-3-10-1-ThreadLocal-的基本概念"><a href="#1-3-10-1-ThreadLocal-的基本概念" class="headerlink" title="1.3.10.1 ThreadLocal 的基本概念"></a>1.3.10.1 ThreadLocal 的基本概念</h5><p><strong>ThreadLocal 作用</strong>：</p>
+<h3 id="3-10-ThreadLocal"><a href="#3-10-ThreadLocal" class="headerlink" title="3.10 ThreadLocal"></a>3.10 ThreadLocal</h3><p>在多线程环境下，对共享变量的访问可能会导致线程安全问题。常见的解决方案包括加锁或使用 <strong>ThreadLocal</strong> 变量。</p>
+<h4 id="3-10-1-ThreadLocal-的基本概念"><a href="#3-10-1-ThreadLocal-的基本概念" class="headerlink" title="3.10.1 ThreadLocal 的基本概念"></a>3.10.1 ThreadLocal 的基本概念</h4><p><strong>ThreadLocal 作用</strong>：</p>
 <ul>
 <li>每个线程都有自己的本地变量副本，避免共享变量带来的线程安全问题。</li>
 <li>适用于线程之间需要隔离但在同一线程内需要共享的场景，如用户会话、事务管理等。</li>
@@ -523,7 +523,7 @@
 <ul>
 <li><code>threadA</code> 设置的值不会影响 <code>threadB</code>，验证了 ThreadLocal 变量的线程隔离性。</li>
 </ul>
-<h5 id="1-3-10-2-ThreadLocal-实现原理"><a href="#1-3-10-2-ThreadLocal-实现原理" class="headerlink" title="1.3.10.2 ThreadLocal 实现原理"></a>1.3.10.2 ThreadLocal 实现原理</h5><p><strong>核心数据结构</strong>：</p>
+<h4 id="3-10-2-ThreadLocal-实现原理"><a href="#3-10-2-ThreadLocal-实现原理" class="headerlink" title="3.10.2 ThreadLocal 实现原理"></a>3.10.2 ThreadLocal 实现原理</h4><p><strong>核心数据结构</strong>：</p>
 <ul>
 <li><code>Thread</code> 类中有 <code>threadLocals</code> 和 <code>inheritableThreadLocals</code>，均为 <code>ThreadLocal.ThreadLocalMap</code> 类型。</li>
 <li><code>ThreadLocalMap</code> 本质是一个 <strong>散列表 (HashMap 结构)</strong>，存储 <code>ThreadLocal</code> 实例为 <strong>Key</strong>，线程私有变量为 <strong>Value</strong>。</li>
@@ -554,7 +554,7 @@
 </ul>
 </li>
 </ol>
-<h5 id="1-3-10-3-ThreadLocal-不支持继承"><a href="#1-3-10-3-ThreadLocal-不支持继承" class="headerlink" title="1.3.10.3 ThreadLocal 不支持继承"></a>1.3.10.3 ThreadLocal 不支持继承</h5><p>默认情况下，<strong>子线程无法继承父线程的 ThreadLocal 变量</strong>。</p>
+<h4 id="3-10-3-ThreadLocal-不支持继承"><a href="#3-10-3-ThreadLocal-不支持继承" class="headerlink" title="3.10.3 ThreadLocal 不支持继承"></a>3.10.3 ThreadLocal 不支持继承</h4><p>默认情况下，<strong>子线程无法继承父线程的 ThreadLocal 变量</strong>。</p>
 <p><strong>示例代码</strong>：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ThreadLocal&lt;String&gt; notExtendThreadLocal = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testThreadLocalNotExtend</span><span class="params">()</span> &#123;</span><br><span class="line">    notExtendThreadLocal.set(<span class="string">&quot;hello world&quot;</span>);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">threadA</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;thread: &quot;</span> + notExtendThreadLocal.get()); <span class="comment">// null</span></span><br><span class="line">    &#125;);</span><br><span class="line">    threadA.start();</span><br><span class="line">    System.out.println(<span class="string">&quot;main: &quot;</span> + notExtendThreadLocal.get()); <span class="comment">// hello world</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -565,7 +565,7 @@
 <ul>
 <li><code>get()</code> 方法获取的是当前线程的 <code>threadLocals</code>，子线程无法访问父线程的数据。</li>
 </ul>
-<h5 id="1-3-10-4-InheritableThreadLocal（支持继承）"><a href="#1-3-10-4-InheritableThreadLocal（支持继承）" class="headerlink" title="1.3.10.4  InheritableThreadLocal（支持继承）"></a>1.3.10.4  InheritableThreadLocal（支持继承）</h5><p><code>InheritableThreadLocal</code> 允许 <strong>子线程继承父线程的本地变量</strong>。</p>
+<h4 id="3-10-4-InheritableThreadLocal（支持继承）"><a href="#3-10-4-InheritableThreadLocal（支持继承）" class="headerlink" title="3.10.4  InheritableThreadLocal（支持继承）"></a>3.10.4  InheritableThreadLocal（支持继承）</h4><p><code>InheritableThreadLocal</code> 允许 <strong>子线程继承父线程的本地变量</strong>。</p>
 <p><strong>核心原理</strong>：</p>
 <ul>
 <li><code>Thread</code> 构造方法会检查 <strong>父线程的</strong> <code>**inheritableThreadLocals**</code>，若不为空，则 <strong>复制给子线程</strong>。</li>
@@ -621,6 +621,8 @@
             
     
             <div class="post-footer-pre-next">
+                
+                    <span>上一篇：<a href='/2023/04/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_02/'>二、Java并发编程-并发基础</a></span>
                 
 
                 
