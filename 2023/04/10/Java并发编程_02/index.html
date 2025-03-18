@@ -210,19 +210,19 @@
             <div class="post-head-meta-center">
         
                 
-                    <span>最近更新：2025-03-14</span> 
+                    <span>最近更新：2025-03-18</span> 
                 
                 
                     
                         &nbsp; | &nbsp;
                     
-                     <span>字数总计：573</span>
+                     <span>字数总计：7.5k</span>
                 
                 
                     
                         &nbsp; | &nbsp;
                     
-                    <span>阅读估时：2分钟</span>
+                    <span>阅读估时：29分钟</span>
                 
                 
                     
@@ -239,48 +239,373 @@
         
             
         
-        <div class=".article-gallery"><h1 id="Java并发编程-并发基础"><a href="#Java并发编程-并发基础" class="headerlink" title="Java并发编程-并发基础"></a>Java并发编程-并发基础</h1><h2 id="1-什么是多线程并发编程"><a href="#1-什么是多线程并发编程" class="headerlink" title="1. 什么是多线程并发编程"></a>1. 什么是多线程并发编程</h2><p>并发: 同一个时间段内多个任务同时都在执行, 并且都没有执行结束(可以理解为由多个单位时间组成的时间段)</p>
-<p>并行: 并行是在单位时间内多个任务同时在执行</p>
-<p>单CPU: 多个任务都是并发执行, CPU会进行任务的调度, 多线程编程会导致频繁切换线程上下文, 没有意义, 如下图4个线程等待单个CPU调度</p>
+        <div class=".article-gallery"><h1 id="Java并发编程-并发基础"><a href="#Java并发编程-并发基础" class="headerlink" title="Java并发编程-并发基础"></a>Java并发编程-并发基础</h1><h2 id="1-什么是多线程并发编程"><a href="#1-什么是多线程并发编程" class="headerlink" title="1. 什么是多线程并发编程"></a>1. 什么是多线程并发编程</h2><p><strong>并发</strong>：指在同一时间段内，多个任务同时执行，且都未完成。可以理解为任务交替执行，由多个时间片构成一个时间段。</p>
+<p><strong>并行</strong>：指在某个单位时间内，多个任务真正同时执行，通常依赖于多核处理器的支持。</p>
+<p>在单核 CPU 体系下，多个任务只能通过 CPU 调度进行切换，形成并发执行的效果，但实际仍然是串行执行。多线程编程在这种情况下可能会导致频繁的线程上下文切换，增加额外开销。例如，单核 CPU 运行多个线程时，线程之间需要不断等待 CPU 进行调度，如下图所示：</p>
 <p><a href="/../img/juc/02.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/02.jpg"></a></p>
-<h2 id="2-为什么要进行多线程并发编程"><a href="#2-为什么要进行多线程并发编程" class="headerlink" title="2. 为什么要进行多线程并发编程"></a>2. 为什么要进行多线程并发编程</h2><p>多核CPU意味着每个线程可以使用自己的CPU运行, 减少了单线程上下文切换的开销, 但同时带来处理海量数据以及请求等问题, 这些都对高并发编程有迫切的需求</p>
-<h2 id="3-Java中的线程安全问题"><a href="#3-Java中的线程安全问题" class="headerlink" title="3. Java中的线程安全问题"></a>3. Java中的线程安全问题</h2><p>共享资源: 资源被多个线程持有或者可以被多个线程访问</p>
-<p>线程安全问题是指当多个线程同时读写一个共享资源且没有任何同步措施时, 导致的脏数据或者其它不可见问题</p>
-<p><a href="/../img/juc/03.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/03.jpg"></a></p>
-<p>注意, 读操作并不会引发问题, 至少有一个线程对共享资源进行写操作, 以计数器操作为例</p>
+<h2 id="2-为什么要进行多线程并发编程"><a href="#2-为什么要进行多线程并发编程" class="headerlink" title="2. 为什么要进行多线程并发编程"></a>2. 为什么要进行多线程并发编程</h2><p>随着多核 CPU 的普及，每个线程可以独占 CPU 核心进行计算，减少了单线程模式下的上下文切换开销。然而，在处理<strong>海量数据、并发请求</strong>等场景时，单线程已经无法满足高性能的需求，因此<strong>多线程并发编程成为提升系统吞吐量和响应速度的重要手段</strong>。</p>
+<p>多线程的主要优势：</p>
+<ul>
+<li><strong>充分利用 CPU 资源</strong>：多核 CPU 允许多个线程同时执行，提高计算效率。</li>
+<li><strong>提高系统吞吐量</strong>：在 I&#x2F;O 密集型任务（如网络请求、数据库查询）中，多线程可以在等待 I&#x2F;O 期间执行其他任务，提升整体处理能力。</li>
+<li><strong>增强程序响应能力</strong>：在 GUI 程序或 Web 服务器中，使用多线程可以避免因单个任务阻塞而影响整体响应。</li>
+</ul>
+<h2 id="3-Java中的线程安全问题"><a href="#3-Java中的线程安全问题" class="headerlink" title="3. Java中的线程安全问题"></a>3. Java中的线程安全问题</h2><p><strong>共享资源</strong>：指多个线程能够访问或持有的资源，如全局变量、静态变量、数据库连接等。</p>
+<p><strong>线程安全问题</strong>：当多个线程同时读写共享资源且未采取同步措施时，可能会引发<strong>数据不一致、脏数据</strong>等问题。例如，在多线程环境下进行计数操作：</p>
 <table>
 <thead>
 <tr>
-<th></th>
-<th>t1</th>
-<th>t2</th>
-<th>t3</th>
-<th>t4</th>
+<th>时间</th>
+<th>线程 A</th>
+<th>线程 B</th>
+<th>内存 count</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>ThreadA</td>
-<td>从内存中读取count到A线程</td>
-<td>递增A线程count</td>
-<td>写回主存</td>
+<td>t1</td>
+<td>读取 count&#x3D;0</td>
 <td></td>
+<td>0</td>
 </tr>
 <tr>
-<td>ThreadB</td>
+<td>t2</td>
+<td>count + 1 &#x3D; 1</td>
+<td>读取 count&#x3D;0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>t3</td>
+<td>写回 count&#x3D;1</td>
+<td>count + 1 &#x3D; 1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>t4</td>
 <td></td>
-<td>从内存中读取count到B线程</td>
-<td>递增B线程count</td>
-<td>写回主存</td>
+<td>写回 count&#x3D;1</td>
+<td>1</td>
 </tr>
 </tbody></table>
-<p>加入count初始值为0<br>t1: A读取count&#x3D;0</p>
-<p>t2: A(count) &#x3D; 1, B读取count&#x3D;0, 因为A线程只是执行写操作并未将count写回内存</p>
-<p>t3: 内存(count&#x3D;1), B(count&#x3D;1)</p>
-<p>t4: 内存(count&#x3D;1)</p>
-<p>执行了2次递增count, 但是 count 的值仍然为1, 这就是共享变量的线程安全问题</p>
-<h2 id="4-Java-中共享变量的内存可见性问题"><a href="#4-Java-中共享变量的内存可见性问题" class="headerlink" title="4. Java 中共享变量的内存可见性问题"></a>4. Java 中共享变量的内存可见性问题</h2><p>如图, 多线程下处理共享变量时Java的内存模型</p>
+<p>假设 <code>count</code> 初始值为 0，线程 A 和线程 B 同时执行自增操作：</p>
+<ul>
+<li><code>t1</code>：线程 A 读取 <code>count=0</code>，准备进行自增。</li>
+<li><code>t2</code>：线程 A 计算 <code>count+1=1</code>，但还未写回内存，同时线程 B 读取 <code>count=0</code>。</li>
+<li><code>t3</code>：线程 A 将 <code>count=1</code> 写回主内存，而线程 B 此时仍然持有 <code>count=0</code>。</li>
+<li><code>t4</code>：线程 B 计算 <code>count+1=1</code>，然后写回主内存，导致 <code>count</code> 仍然是 <code>1</code>，丢失了一次递增操作。</li>
+</ul>
+<p>尽管执行了两次递增操作，<code>count</code> 的最终值仍然为 <code>1</code>，导致<strong>数据不一致</strong>，这就是典型的<strong>共享变量的线程安全问题</strong>。</p>
+<h2 id="4-Java-中共享变量的内存可见性问题"><a href="#4-Java-中共享变量的内存可见性问题" class="headerlink" title="4. Java 中共享变量的内存可见性问题"></a>4. Java 中共享变量的内存可见性问题</h2><p>在多线程环境下，每个线程都有自己的<strong>工作内存（缓存）</strong>，它会从<strong>主内存</strong>中读取数据进行计算，并在某个时刻将修改后的数据写回主内存。这种<strong>缓存机制</strong>可能导致线程之间的数据不一致，形成<strong>内存可见性问题</strong>。</p>
+<p>Java 内存模型（JMM，Java Memory Model）规定：</p>
+<ol>
+<li>所有变量都存储在<strong>主内存</strong>中。</li>
+<li>每个线程在使用变量时，都会从主内存复制到自己的<strong>工作内存</strong>（CPU 缓存或寄存器）。</li>
+<li>线程对变量的修改不会立即同步到主内存，其他线程也无法立刻看到最新值。</li>
+</ol>
+<p>如下图所示：</p>
+<p><a href="/../img/juc/03.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/03.jpg"></a></p>
 <p><a href="/../img/juc/04.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/04.jpg"></a></p>
-<p>Java内存模型规定, 将所有的变量都存放在主内存中, 线程使用时会把主内存中的变量复制到自己的工作空间中, 实际上线程在读写操作时是读写自己内存中的变量</p>
+<p><strong>内存可见性问题的典型表现</strong>：</p>
+<ul>
+<li>线程 A 修改了共享变量，但线程 B 仍然读取的是旧值，导致数据不一致。</li>
+<li>线程 B 对变量的修改可能不会立刻反映到主内存中，影响其他线程的读取。</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>使用 <code>volatile</code> 关键字，保证变量的可见性（但不保证原子性）。</li>
+<li>采用 <code>synchronized</code> 或 <code>Lock</code> 机制，确保线程安全。</li>
+<li>使用 <strong>原子类（AtomicInteger 等）</strong> 来保证操作的原子性。</li>
+</ul>
+<h2 id="5-Java-中的-synchronized-和-volatile"><a href="#5-Java-中的-synchronized-和-volatile" class="headerlink" title="5. Java 中的 synchronized 和 volatile"></a>5. Java 中的 <code>synchronized</code> 和 <code>volatile</code></h2><p>在 Java 中，<strong>可见性问题</strong> 可以通过 <code>synchronized</code> 和 <code>volatile</code> 解决，它们在<strong>内存可见性</strong>和<strong>同步机制</strong>上各有不同的应用场景。</p>
+<hr>
+<h3 id="5-1-synchronized"><a href="#5-1-synchronized" class="headerlink" title="5.1 synchronized"></a>5.1 <code>synchronized</code></h3><h4 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. <strong>简介</strong></h4><p><code>synchronized</code> 是 Java 提供的一种 <strong>内置锁（Monitor 锁）</strong>，用于保证线程安全。每个对象都可以作为一把锁，当线程进入 <code>synchronized</code> 代码块时：</p>
+<ul>
+<li><strong>自动获取对象的内部锁</strong>，阻止其他线程进入该同步代码块。</li>
+<li>线程执行完成或异常退出时，<strong>自动释放锁</strong>。</li>
+</ul>
+<p>由于 Java 线程与<strong>操作系统的原生线程</strong>一一对应，<code>synchronized</code> 可能导致线程阻塞，触发<strong>用户态到内核态的切换</strong>，带来额外的<strong>上下文切换</strong>开销。因此，在高并发场景下需慎重使用。</p>
+<h4 id="2-内存语义"><a href="#2-内存语义" class="headerlink" title="2. 内存语义"></a>2. <strong>内存语义</strong></h4><p><code>synchronized</code> 既保证<strong>互斥性</strong>（同一时刻仅一个线程执行），也保证<strong>可见性</strong>（确保读取最新数据）。</p>
+<ul>
+<li><strong>进入 <code>synchronized</code> 代码块时</strong>：<ul>
+<li>线程会 <strong>清空工作内存中涉及的共享变量</strong>，确保从<strong>主内存</strong>获取最新数据。</li>
+</ul>
+</li>
+<li><strong>执行 <code>synchronized</code> 代码块</strong>：<ul>
+<li>线程独占执行，防止竞态条件。</li>
+</ul>
+</li>
+<li><strong>退出 <code>synchronized</code> 代码块时</strong>：<ul>
+<li>线程 <strong>必须将修改的变量刷新回主内存</strong>，确保其他线程可见。</li>
+</ul>
+</li>
+</ul>
+<p>这种<strong>内存语义</strong>由 <strong>Java 内存模型（JVM）</strong> 通过 <strong>内存屏障（Memory Barrier）</strong> 机制实现，使得 <code>synchronized</code> 具备 <strong>可见性</strong> 和 <strong>有序性</strong>。</p>
+<h3 id="5-2-volatile"><a href="#5-2-volatile" class="headerlink" title="5.2 volatile"></a>5.2 <code>volatile</code></h3><h4 id="1-简介-1"><a href="#1-简介-1" class="headerlink" title="1. 简介"></a>1. <strong>简介</strong></h4><p><code>synchronized</code> 解决了<strong>共享变量的可见性问题</strong>，但由于<strong>线程阻塞和上下文切换</strong>，性能开销较大。Java 提供了 <code>volatile</code> 关键字，作为<strong>更轻量级的可见性保证机制</strong>。</p>
+<p>当变量被声明为 <code>volatile</code> 时：</p>
+<ul>
+<li>线程 <strong>修改变量时</strong>，会<strong>立刻刷新到主内存</strong>。</li>
+<li>其他线程 <strong>读取变量时</strong>，会<strong>直接从主内存获取最新值</strong>，而不是使用工作内存的缓存。</li>
+</ul>
+<p><strong>注意：<code>volatile</code> 不能保证原子性</strong>，它仅确保变量的可见性。</p>
+<h4 id="2-内存语义-1"><a href="#2-内存语义-1" class="headerlink" title="2. 内存语义"></a>2. <strong>内存语义</strong></h4><ul>
+<li>写入 <code>volatile</code> 变量时：<ul>
+<li><strong>修改值后立即同步到主内存</strong>。</li>
+</ul>
+</li>
+<li>读取 <code>volatile</code> 变量时：<ul>
+<li><strong>强制从主内存获取最新值</strong>，不使用线程的本地缓存。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-示例对比"><a href="#3-示例对比" class="headerlink" title="3. 示例对比"></a>3. <strong>示例对比</strong></h4><p>以下是 <code>synchronized</code> 和 <code>volatile</code> 在变量同步中的使用对比：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">java复制编辑// 非线程安全的共享变量</span><br><span class="line">public class ThreadNotSafeInteger &#123;</span><br><span class="line">    private int value;</span><br><span class="line"></span><br><span class="line">    public int get() &#123;</span><br><span class="line">        return value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void set(int value) &#123;</span><br><span class="line">        this.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 使用 synchronized 解决并发问题（保证可见性和原子性）</span><br><span class="line">public class ThreadSafeIntegerBySynchronized &#123;</span><br><span class="line">    private int value;</span><br><span class="line"></span><br><span class="line">    public synchronized int get() &#123;</span><br><span class="line">        return value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public synchronized void set(int value) &#123;</span><br><span class="line">        this.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 使用 volatile 解决可见性问题（但不保证原子性）</span><br><span class="line">public class ThreadSafeIntegerByVolatile &#123;</span><br><span class="line">    private volatile int value;</span><br><span class="line"></span><br><span class="line">    public int get() &#123;</span><br><span class="line">        return value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void set(int value) &#123;</span><br><span class="line">        this.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>对比分析：</strong></p>
+<ul>
+<li><strong><code>synchronized</code></strong>：保证<strong>原子性 + 可见性</strong>，但开销较大。</li>
+<li><strong><code>volatile</code></strong>：仅保证<strong>可见性</strong>，不适用于<strong>复合操作</strong>（如 <code>i++</code> 仍然可能出现竞态条件）。</li>
+</ul>
+<h3 id="5-3-适用场景"><a href="#5-3-适用场景" class="headerlink" title="5.3 适用场景"></a>5.3 适用场景</h3><ul>
+<li><strong>使用 <code>volatile</code></strong>：<ul>
+<li>状态标志（如 <code>boolean isRunning</code>）</li>
+<li>轻量级的变量同步（不涉及复合操作）</li>
+</ul>
+</li>
+<li><strong>使用 <code>synchronized</code></strong>：<ul>
+<li>需要<strong>互斥访问</strong>的场景</li>
+<li>复合操作（如 <code>i++</code>、<code>a = b + c</code>）</li>
+<li>需要<strong>保证原子性和可见性</strong>的复杂业务逻辑</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-Java中的原子性操作"><a href="#6-Java中的原子性操作" class="headerlink" title="6. Java中的原子性操作"></a>6. Java中的原子性操作</h2><p>在并发编程中，<strong>原子性</strong>指的是一系列操作要么全部执行，要么全都不执行，不会被其他线程干扰。</p>
+<p><strong>线程安全问题</strong></p>
+<p>计数器操作通常涉及 <strong>先读取当前值，再递增</strong>，如果无法保证该过程的原子性，在多线程环境下可能会导致<strong>线程安全问题</strong>。</p>
+<p><strong>示例对比：线程不安全 vs. 线程安全</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadNotSafeCount</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Long value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Long <span class="title function_">getValue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">        value++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadSafeCount</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Long value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> Long <span class="title function_">getValue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">        value++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>synchronized</code> 能确保<strong>原子性</strong>和<strong>可见性</strong>，但它是 <strong>排它锁</strong>，当一个线程访问 <code>value</code> 时，其他线程都会被阻塞，尤其是<strong>读操作</strong>也加锁，会影响性能。如果去掉 <code>synchronized</code> 只对 <code>getValue()</code> 解锁，仍然会导致<strong>数据可见性问题（脏读）</strong>。</p>
+<p>更好的解决方案是使用 <code>AtomicLong</code>，它基于 CAS（Compare-And-Swap）算法，能高效保证原子性。</p>
+<h2 id="7-Java中的CAS操作"><a href="#7-Java中的CAS操作" class="headerlink" title="7. Java中的CAS操作"></a>7. Java中的CAS操作</h2><p>在使用锁时，线程可能会发生阻塞，频繁进行<strong>上下文切换</strong>和<strong>线程调度</strong>，从而增加系统开销。</p>
+<p><code>volatile</code> 关键字<strong>仅保证可见性</strong>，但<strong>无法确保操作的原子性</strong>。</p>
+<p><strong>CAS（Compare-And-Swap）</strong> 是 JDK 提供的一种<strong>非阻塞原子操作</strong>，通过<strong>硬件级别的支持</strong>确保<strong>比较-更新操作的原子性</strong>。<code>Unsafe</code> 类提供了一系列 CAS 相关的 API，以实现高效的并发控制。</p>
+<h3 id="7-1-Unsafe类"><a href="#7-1-Unsafe类" class="headerlink" title="7.1  Unsafe类"></a>7.1  Unsafe类</h3><p><code>Unsafe</code> 是 Java 提供的一个<strong>低级 API</strong>，用于直接操作内存、对象实例化、CAS 操作等，通常用于高性能并发工具（如 <code>AtomicInteger</code>）、序列化框架（如 <code>Kryo</code>）等。</p>
+<ul>
+<li><strong>非安全</strong>：<code>Unsafe</code> 允许绕过 Java 语言层面提供的安全机制，直接操作内存，容易导致 JVM 崩溃或内存泄漏。</li>
+<li><strong>私有化构造</strong>：<code>Unsafe</code> 的构造方法是私有的，无法通过 <code>new</code> 直接实例化。</li>
+<li><strong>获取方式</strong>：可以通过反射获取 <code>Unsafe</code> 实例。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title function_">getUnsafe</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">        field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> (Unsafe) field.get(<span class="literal">null</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="7-2-关键API"><a href="#7-2-关键API" class="headerlink" title="7.2 关键API"></a>7.2 关键API</h3><h4 id="7-2-1-内存操作"><a href="#7-2-1-内存操作" class="headerlink" title="7.2.1 内存操作"></a>7.2.1 内存操作</h4><p><code>Unsafe</code> 提供了直接操作内存的方法，包括分配、释放、读写等。</p>
+<ol>
+<li><p><strong>直接分配 &#x2F; 释放内存</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> <span class="variable">address</span> <span class="operator">=</span> unsafe.allocateMemory(<span class="number">1024</span>); <span class="comment">// 分配 1024 字节内存</span></span><br><span class="line">unsafe.freeMemory(address); <span class="comment">// 释放内存</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>内存写入 &#x2F; 读取</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unsafe.putInt(address, <span class="number">100</span>); <span class="comment">// 在指定地址写入 100</span></span><br><span class="line"><span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> unsafe.getInt(address); <span class="comment">// 读取该地址的值</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="7-2-2-对象操作"><a href="#7-2-2-对象操作" class="headerlink" title="7.2.2 对象操作"></a>7.2.2 <strong>对象操作</strong></h4><p>允许在不调用构造方法的情况下创建对象(序列化框架)</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> (User) unsafe.allocateInstance(User.class);</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-3-对象字段操作"><a href="#7-2-3-对象字段操作" class="headerlink" title="7.2.3 对象字段操作"></a>7.2.3 <strong>对象字段操作</strong></h4><ol>
+<li><p><strong>获取字段偏移量</strong></p>
+<p><code>objectFieldOffset</code> 返回字段在对象中的内存偏移量，用于 <code>Unsafe</code> 直接访问字段。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> User.class.getDeclaredField(<span class="string">&quot;age&quot;</span>);</span><br><span class="line"><span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> unsafe.objectFieldOffset(field);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>直接操作字段值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">unsafe.putInt(user, offset, <span class="number">25</span>); <span class="comment">// 直接修改 user.age = 25</span></span><br><span class="line"><span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> unsafe.getInt(user, offset); <span class="comment">// 读取 age</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="7-2-4-CAS操作"><a href="#7-2-4-CAS操作" class="headerlink" title="7.2.4 CAS操作"></a>7.2.4 <strong>CAS操作</strong></h4><p>CAS 是无锁并发的基础，<code>Unsafe</code> 提供了底层支持, CAS 常用于 <code>AtomicInteger</code> 等类来实现<strong>无锁原子操作</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> unsafe.compareAndSwapInt(user, offset, <span class="number">25</span>, <span class="number">30</span>); <span class="comment">// 期望值25，修改为30</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-5-数组操作"><a href="#7-2-5-数组操作" class="headerlink" title="7.2.5 数组操作"></a>7.2.5 <strong>数组操作</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">baseOffset</span> <span class="operator">=</span> unsafe.arrayBaseOffset(<span class="type">int</span>[].class); <span class="comment">// 获取数组起始地址</span></span><br><span class="line"><span class="type">int</span> <span class="variable">indexScale</span> <span class="operator">=</span> unsafe.arrayIndexScale(<span class="type">int</span>[].class); <span class="comment">// 获取数组元素大小（步长）</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="7-2-6-线程操作"><a href="#7-2-6-线程操作" class="headerlink" title="7.2.6 线程操作"></a>7.2.6 <strong>线程操作</strong></h4><p>挂起和恢复线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unsafe.park(<span class="literal">false</span>, <span class="number">0</span>); <span class="comment">// 挂起当前线程</span></span><br><span class="line">unsafe.unpark(Thread.currentThread()); <span class="comment">// 恢复线程</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="7-3-综合案例"><a href="#7-3-综合案例" class="headerlink" title="7.3 综合案例"></a>7.3 综合案例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Unsafe 内部构造器私有, 不能new, 可以通过反射theUnsafe获取</span></span><br><span class="line"><span class="comment">// 该接口提供了很多操作内存 线程 cpu的底层API, 私有较为安全防止被误用</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Unsafe unsafe;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Target</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getValue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setValue</span><span class="params">(<span class="type">int</span> value)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Before</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUp</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 实例名称就叫theUnsafe</span></span><br><span class="line">    <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">    field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">    unsafe = (Unsafe) field.get(<span class="literal">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testObjectField</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">Target</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Target</span>();</span><br><span class="line">    <span class="comment">// unSafe 通过内存偏移量访问字段, 绕过了 Java的访问控制机制, 直接修改主内存数据, 并非工作内程数据</span></span><br><span class="line">    <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> Target.class.getDeclaredField(<span class="string">&quot;value&quot;</span>);</span><br><span class="line">    <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> unsafe.objectFieldOffset(field);</span><br><span class="line">    assertEquals(<span class="number">10</span>, unsafe.getInt(target, offset));</span><br><span class="line">    unsafe.putInt(target, offset, <span class="number">20</span>);</span><br><span class="line">    assertEquals(<span class="number">20</span>, unsafe.getInt(target, offset));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testArrayOperations</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span>[] array = <span class="keyword">new</span> <span class="title class_">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">    <span class="type">int</span> <span class="variable">baseOffset</span> <span class="operator">=</span> unsafe.arrayBaseOffset(<span class="type">int</span>[].class);</span><br><span class="line">    <span class="type">int</span> <span class="variable">indexScale</span> <span class="operator">=</span> unsafe.arrayIndexScale(<span class="type">int</span>[].class);</span><br><span class="line"></span><br><span class="line">    assertEquals(<span class="number">16</span>, baseOffset); <span class="comment">// JVM 默认值，可能因环境变化</span></span><br><span class="line">    assertEquals(<span class="number">4</span>, indexScale); <span class="comment">// int 占 4 字节</span></span><br><span class="line"></span><br><span class="line">    <span class="type">long</span> <span class="variable">index1Address</span> <span class="operator">=</span> baseOffset + indexScale;</span><br><span class="line">    assertEquals(<span class="number">2</span>, unsafe.getInt(array, index1Address));</span><br><span class="line">    unsafe.putInt(array, index1Address, <span class="number">100</span>);</span><br><span class="line">    assertEquals(<span class="number">100</span>, array[<span class="number">1</span>]); <span class="comment">// 修改成功</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testCASOperation</span><span class="params">()</span> <span class="keyword">throws</span> NoSuchFieldException &#123;</span><br><span class="line">    <span class="comment">// CAS机制从硬件层面保证了原子性操作</span></span><br><span class="line">    <span class="type">Target</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Target</span>();</span><br><span class="line">    <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> Target.class.getDeclaredField(<span class="string">&quot;value&quot;</span>);</span><br><span class="line">    <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> unsafe.objectFieldOffset(field);</span><br><span class="line"></span><br><span class="line">    assertTrue(unsafe.compareAndSwapInt(target, offset, <span class="number">10</span>, <span class="number">50</span>)); <span class="comment">// CAS 成功</span></span><br><span class="line">    assertEquals(<span class="number">50</span>, unsafe.getInt(target, offset)); <span class="comment">// 值已变更</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testOperation</span><span class="params">()</span> <span class="keyword">throws</span> NoSuchFieldException &#123;</span><br><span class="line">    <span class="comment">// 这种方式读写操作并非原子性操作, 可能会导致更新消失 </span></span><br><span class="line">    <span class="type">Target</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Target</span>();</span><br><span class="line">    <span class="comment">// 先读操作</span></span><br><span class="line">    <span class="keyword">if</span> (target.getValue() == <span class="number">10</span>) &#123;</span><br><span class="line">        <span class="comment">// 再写操作</span></span><br><span class="line">        target.setValue(<span class="number">50</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="8-Java-指令重排序"><a href="#8-Java-指令重排序" class="headerlink" title="8. Java 指令重排序"></a>8. Java 指令重排序</h2><p>Java内存模型（JMM）允许编译器和处理器对指令进行重排序，以提高运行性能。编译器和处理器会根对没有数据依赖的指令进行重排序，以优化代码执行的效率。在单线程环境中，这种优化通常不会引发问题，但在多线程环境中，由于线程的执行顺序不可预测，指令重排序可能会导致数据不一致或不可预料的结果。</p>
+<p><strong>示例</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="type">boolean</span> <span class="variable">volatileFlag</span> <span class="operator">=</span> <span class="literal">false</span>; <span class="comment">// 使用volatile确保可见性</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">value</span> <span class="operator">=</span> <span class="number">0</span>; <span class="comment">// 共享变量</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testUnSafe</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">threadA</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="comment">// 线程A修改共享变量</span></span><br><span class="line">        value = <span class="number">42</span>;  <span class="comment">// 指令1</span></span><br><span class="line">        flag = <span class="literal">true</span>;  <span class="comment">// 指令2</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">threadB</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="comment">// 线程B读取共享变量</span></span><br><span class="line">        <span class="keyword">if</span> (flag) &#123; <span class="comment">// 指令3</span></span><br><span class="line">            System.out.println(<span class="string">&quot;value: &quot;</span> + value); <span class="comment">// 指令4</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 指令重排序导致 打印结果不一致 </span></span><br><span class="line">    threadA.start();</span><br><span class="line">    threadB.start();</span><br><span class="line">    threadA.join();</span><br><span class="line">    threadB.join();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSafe</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">threadA</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="comment">// 线程A修改共享变量</span></span><br><span class="line">        value = <span class="number">42</span>;  <span class="comment">// 指令1</span></span><br><span class="line">        volatileFlag = <span class="literal">true</span>;  <span class="comment">// 指令2</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">threadB</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="comment">// 线程B读取共享变量</span></span><br><span class="line">        <span class="keyword">if</span> (volatileFlag) &#123; <span class="comment">// 指令3</span></span><br><span class="line">            System.out.println(<span class="string">&quot;value: &quot;</span> + value); <span class="comment">// 指令4</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 使用volatile关键字, 保证变量的修改对线程可见</span></span><br><span class="line">    threadA.start();</span><br><span class="line">    threadB.start();</span><br><span class="line">    threadA.join();</span><br><span class="line">    threadB.join();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>volatile</code> 的作用</p>
+<ul>
+<li><strong>写操作：</strong> 写入<code>volatile</code>变量时，确保写入操作前的所有指令不会被重排序到写操作之后。即，<code>value = 42</code>不会被重排序到<code>volatileFlag = true</code>之后。</li>
+<li><strong>读操作：</strong> 读<code>volatile</code>变量时，确保读操作后面的所有指令不会被重排序到读取操作之前。即，线程B在读取到<code>volatileFlag</code>时，它后面的<code>value</code>读取操作将确保读取到最新值。</li>
+</ul>
+<p>通过使用<code>volatile</code>，可以确保变量的更新在多个线程之间可见，从而避免了由于指令重排序导致的数据不一致问题。</p>
+<h2 id="9-伪共享"><a href="#9-伪共享" class="headerlink" title="9. 伪共享"></a>9. 伪共享</h2><p>伪共享（False Sharing）是由于多线程并发访问不同变量时，它们意外地位于同一个CPU缓存行内，导致缓存同步产生性能下降的一种现象。为了更好地理解伪共享，我们可以从计算机内存缓存模型的角度来分析。</p>
+<h3 id="9-1-内存缓存模型"><a href="#9-1-内存缓存模型" class="headerlink" title="9.1 内存缓存模型"></a>9.1 内存缓存模型</h3><p>现代计算机通常采用<strong>多级缓存</strong>架构，包括L1缓存、L2缓存等，它们位于CPU内部，距离CPU计算单元非常近，可以极大地提高访问速度。为了弥补CPU与主内存之间的速度差异，CPU会先在缓存（Cache）中查找需要的数据，只有当数据不在缓存中时，才会从主内存加载。</p>
+<h3 id="9-2-缓存行"><a href="#9-2-缓存行" class="headerlink" title="9.2 缓存行"></a>9.2 缓存行</h3><ul>
+<li><strong>缓存行</strong>是CPU缓存中的基本存储单位，通常每个缓存行大小为64字节（不同架构可能有所不同）。</li>
+<li>当CPU访问内存中的某个变量时，它并不是单独加载该变量，而是把变量所在的缓存行（包含该变量的64字节内存区域）加载到CPU缓存中。</li>
+<li>一个缓存行可能包含多个变量。</li>
+</ul>
+<h3 id="9-3-缓存一致性协议"><a href="#9-3-缓存一致性协议" class="headerlink" title="9.3 缓存一致性协议"></a>9.3 缓存一致性协议</h3><p>由于现代计算机是多核的，每个核心通常有自己的L1和L2缓存，这就带来了一个问题：不同核心的缓存中的数据可能会不一致。为了保证多个核心之间的数据一致性，CPU会通过<strong>缓存一致性协议</strong>（如MESI协议）来协调缓存的更新。</p>
+<h3 id="9-4-伪共享如何发生的"><a href="#9-4-伪共享如何发生的" class="headerlink" title="9.4 伪共享如何发生的?"></a>9.4 伪共享如何发生的?</h3><p>伪共享发生的根本原因是<strong>多个线程对不同变量的修改，可能导致这些变量位于同一个缓存行中</strong>。即使这些变量没有数据依赖性，但由于同一个缓存行只能由一个线程修改，导致多个线程同时修改不同变量时，必须频繁地同步缓存行。这种同步带来了不必要的性能损失。</p>
+<h3 id="9-5-伪共享的工作过程"><a href="#9-5-伪共享的工作过程" class="headerlink" title="9.5 伪共享的工作过程"></a>9.5 伪共享的工作过程</h3><ol>
+<li><p><strong>缓存行的共享：</strong> 假设有两个线程，线程1修改变量<code>x</code>，线程2修改变量<code>y</code>，且<code>x</code>和<code>y</code>位于内存中的相邻位置，可能会被加载到同一个缓存行中。</p>
+</li>
+<li><p><strong>缓存行同步：</strong> 当线程1修改<code>x</code>时，它会更新缓存行中的数据，并将更新后的缓存行标记为“脏”状态。线程2如果修改<code>y</code>，则会导致缓存行同步，因为<code>x</code>和<code>y</code>属于同一个缓存行。即使<code>x</code>和<code>y</code>之间没有数据依赖性，CPU仍然需要同步缓存行的状态。</p>
+</li>
+<li><p><strong>性能影响：</strong> 由于缓存行同步需要频繁地与其他核心的缓存进行协调，导致缓存行的同步成为性能瓶颈。多个线程虽然在操作不同变量，但由于这些变量位于同一个缓存行中，它们的访问会导致不必要的同步开销，从而降低整体性能。</p>
+</li>
+</ol>
+<p><a href="/..%5Cimg%5Cjuc%5C05.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/..%5Cimg%5Cjuc%5C05.jpg"></a></p>
+<h3 id="9-6-如何避免伪共享"><a href="#9-6-如何避免伪共享" class="headerlink" title="9.6 如何避免伪共享?"></a>9.6 如何避免伪共享?</h3><ol>
+<li><p><strong>调整变量布局：</strong> 通过调整内存布局，确保不同变量位于不同的缓存行中。可以通过在变量之间插入空白字段来填充内存，这样就能确保变量不会处于同一个缓存行内。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyDataVoidFlaseSharing</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="type">long</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line">    <span class="comment">// 填充内存，确保x和y不在同一个缓存行</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> padding1, padding2, padding3, padding4, padding5, padding6;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="type">long</span> <span class="variable">y</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用<code>@Contended</code>注解（JVM特性）：</strong> 在Java中，可以使用<code>@Contended</code>注解来让JVM自动确保多个字段不共享同一个缓存行（需要配合JVM选项<code>-XX:-RestrictContended</code>）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyDataVoidFlaseSharingContended</span> &#123;</span><br><span class="line">    <span class="meta">@Contended</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="type">long</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line">    <span class="meta">@Contended</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="type">long</span> <span class="variable">y</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="10-锁"><a href="#10-锁" class="headerlink" title="10. 锁"></a>10. 锁</h2><h3 id="10-1-乐观锁与悲观锁"><a href="#10-1-乐观锁与悲观锁" class="headerlink" title="10.1 乐观锁与悲观锁"></a>10.1 乐观锁与悲观锁</h3><h4 id="10-1-1-悲观锁"><a href="#10-1-1-悲观锁" class="headerlink" title="10.1.1 悲观锁"></a>10.1.1 悲观锁</h4><p>悲观锁的核心思想是<strong>认为数据很容易被其他线程修改</strong>，因此在<strong>数据处理前先加锁</strong>，确保整个处理过程中数据不会被其他线程修改。悲观锁通常依赖<strong>数据库的锁机制</strong>来实现，例如 <strong><code>SELECT ... FOR UPDATE</code></strong> 语句。</p>
+<p><strong>示例代码</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateEntry</span><span class="params">(<span class="type">long</span> id)</span>&#123;</span><br><span class="line"><span class="comment">//(1)使用悲观锁获取指定记录</span></span><br><span class="line"><span class="type">EntryObject</span> <span class="variable">entry</span> <span class="operator">=</span> query(<span class="string">&quot;select * from table1 where id = #&#123;id&#125; for</span></span><br><span class="line"><span class="string">update&quot;</span>,id);</span><br><span class="line"><span class="comment">//(2)修改记录内容，根据计算修改entry记录的属性</span></span><br><span class="line"><span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> generatorName(entry);</span><br><span class="line">entry.setName(name);</span><br><span class="line">……</span><br><span class="line"><span class="comment">//(3)update操作</span></span><br><span class="line"><span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> update(<span class="string">&quot;update table1 set name=#&#123;name&#125;,age=#&#123;age&#125; where id</span></span><br><span class="line"><span class="string">=#&#123;id&#125;&quot;</span>,entry);</span><br><span class="line"><span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>事务提交时机</strong></p>
+<p>当事务传播机制为 <strong><code>REQUIRED</code></strong> 时，方法 <code>updateEntry()</code> 中的 <strong>查询 (<code>query</code>) 和更新 (<code>update</code>) 操作</strong> 都运行在<strong>同一个事务中</strong>。即：</p>
+<ul>
+<li><code>query(&quot;SELECT ... FOR UPDATE&quot;)</code> 读取数据并加锁，但<strong>不会立即提交</strong>。</li>
+<li>只有 <code>updateEntry()</code> 方法执行完成后，事务才会被<strong>统一提交</strong>。</li>
+</ul>
+<p><strong>为什么需要整个方法执行完才能提交事务？</strong></p>
+<p>这是因为 Spring 默认的 <strong>事务提交时机</strong> 是<strong>方法执行完毕后提交事务</strong>，即 <strong>“方法级别的事务管理”</strong>：</p>
+<ol>
+<li>事务在 <code>updateEntry()</code> <strong>方法开始时开启</strong>（如果上层没有事务）。</li>
+<li><strong>所有数据库操作都在该事务中执行</strong>，包括 <code>query</code> 和 <code>update</code>。</li>
+<li>方法结束后，Spring <strong>自动提交事务</strong>（或在发生异常时回滚）。</li>
+</ol>
+<p><strong>并发情况下的行为</strong></p>
+<p>多个线程调用 <code>updateEntry(id)</code>：</p>
+<ul>
+<li><strong>如果传入相同的 <code>id</code></strong>，第一个线程获取行级锁，其他线程<strong>必须等待它的事务提交或回滚</strong>，然后才能继续执行。</li>
+<li>这保证了同一条记录<strong>不会被多个线程同时修改</strong>，避免并发冲突。</li>
+</ul>
+<h4 id="10-1-2-乐观锁"><a href="#10-1-2-乐观锁" class="headerlink" title="10.1.2 乐观锁"></a>10.1.2 乐观锁</h4><p><strong>乐观锁</strong> 认为数据在大多数情况下不会发生冲突，因此在访问记录时<strong>不会加排它锁</strong>，而是在提交更新时<strong>检测是否发生数据冲突</strong>。其核心原理是：</p>
+<ol>
+<li><p><strong>查询数据</strong> 时获取 <code>version</code>（或其他状态字段）。</p>
+</li>
+<li><p><strong>更新数据</strong> 时，确保 <code>version</code> 未发生变化（即 <code>WHERE version = ?</code>）。</p>
+</li>
+<li><p>通过 <code>UPDATE</code> 影响的行数</p>
+<p> 判断是否成功：</p>
+<ul>
+<li><strong>成功</strong>（<code>UPDATE</code> 影响行数 &gt; 0）：说明 <code>version</code> 未被修改，更新完成。</li>
+<li><strong>失败</strong>（<code>UPDATE</code> 影响行数 &#x3D; 0）：说明 <code>version</code> 已被其他线程修改，更新失败，可能需要重试或其他处理。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例代码</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateEntry</span><span class="params">(<span class="type">long</span> id)</span> &#123;</span><br><span class="line">    <span class="comment">// (1) 查询记录，获取当前 version</span></span><br><span class="line">    <span class="type">EntryObject</span> <span class="variable">entry</span> <span class="operator">=</span> query(<span class="string">&quot;SELECT id, name, age, version FROM table1 WHERE id = #&#123;id&#125;&quot;</span>, id);</span><br><span class="line">    <span class="keyword">if</span> (entry == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// 记录不存在</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (2) 计算修改后的值</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> generatorName(entry);</span><br><span class="line">    entry.setName(name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (3) 使用乐观锁进行更新，确保 version 未被修改</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> update(</span><br><span class="line">        <span class="string">&quot;UPDATE table1 SET name = #&#123;name&#125;, age = #&#123;age&#125;, version = version + 1 &quot;</span> +</span><br><span class="line">        <span class="string">&quot;WHERE id = #&#123;id&#125; AND version = #&#123;version&#125;&quot;</span>,</span><br><span class="line">        entry</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (4) 返回更新结果，判断是否成功</span></span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="10-2-公平锁与非公平锁"><a href="#10-2-公平锁与非公平锁" class="headerlink" title="10.2 公平锁与非公平锁"></a>10.2 公平锁与非公平锁</h3><h4 id="10-2-1-公平锁-vs-非公平锁"><a href="#10-2-1-公平锁-vs-非公平锁" class="headerlink" title="10.2.1 公平锁 vs. 非公平锁"></a>10.2.1 公平锁 vs. 非公平锁</h4><ul>
+<li><strong>公平锁</strong>：线程按照<strong>请求锁的先后顺序</strong>依次获取锁（FIFO）。</li>
+<li><strong>非公平锁</strong>：线程获取锁<strong>不考虑请求的顺序</strong>，可以直接尝试抢占锁，提高吞吐量。</li>
+</ul>
+<p>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">java复制编辑<span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFairLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 创建公平锁</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">fairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">true</span>);</span><br><span class="line">    <span class="comment">// 创建非公平锁（默认）</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">unfairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="10-2-2-为什么非公平锁性能更好？"><a href="#10-2-2-为什么非公平锁性能更好？" class="headerlink" title="10.2.2 为什么非公平锁性能更好？"></a>10.2.2 为什么非公平锁性能更好？</h4><p><strong>公平锁的性能开销主要来自于两个方面：</strong></p>
+<ol>
+<li><strong>线程切换成本高</strong><ul>
+<li>公平锁需要维护一个<strong>等待队列</strong>，保证线程按照<strong>先来先得</strong>的顺序获取锁。</li>
+<li>当锁被释放时，<strong>需要通知队列中最早等待的线程</strong>，可能涉及上下文切换，增加了开销。</li>
+</ul>
+</li>
+<li><strong>竞争激烈时的吞吐量下降</strong><ul>
+<li><strong>非公平锁允许“抢占”</strong>，当锁释放时，<strong>当前线程或者新来的线程可以直接尝试获取锁</strong>，减少线程调度的等待时间。</li>
+<li><strong>公平锁则必须严格按照顺序</strong>，即使当前线程刚释放锁，仍然要让队列中最老的线程先执行，导致线程不能<strong>充分利用 CPU</strong>。</li>
+</ul>
+</li>
+</ol>
+<h4 id="10-2-3-什么时候选择公平锁？"><a href="#10-2-3-什么时候选择公平锁？" class="headerlink" title="10.2.3 什么时候选择公平锁？"></a>10.2.3 什么时候选择公平锁？</h4><p>尽管<strong>非公平锁通常性能更好</strong>，但在以下情况，可能仍然需要<strong>使用公平锁</strong>：</p>
+<ul>
+<li><strong>需要严格保证先来先得</strong>，避免线程“饥饿”（如一些限流控制、银行转账等场景）。</li>
+<li><strong>业务对公平性要求较高</strong>，比如任务调度系统，确保任务按照提交顺序执行。</li>
+</ul>
+<h3 id="10-3-独占锁与共享锁"><a href="#10-3-独占锁与共享锁" class="headerlink" title="10.3 独占锁与共享锁"></a>10.3 独占锁与共享锁</h3><h4 id="10-3-1-独占锁"><a href="#10-3-1-独占锁" class="headerlink" title="10.3.1 独占锁"></a>10.3.1 独占锁</h4><p><strong>概念</strong></p>
+<ul>
+<li><strong>独占锁</strong>（又称<strong>写锁</strong>），指的是在同一时间<strong>只能有一个线程（或事务）获取该锁</strong>，其他线程<strong>无法同时获取</strong>，即使是读取操作也需要等待。</li>
+<li>典型应用：<code>ReentrantLock</code>、数据库 <code>SELECT ... FOR UPDATE</code>、<code>synchronized</code> 关键字。</li>
+</ul>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExclusiveLockDemo</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(); <span class="comment">// 默认是非公平锁</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">criticalSection</span><span class="params">()</span> &#123;</span><br><span class="line">            lock.lock(); <span class="comment">// 获取独占锁</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 获取独占锁，执行关键操作...&quot;</span>);</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>); <span class="comment">// 模拟耗时操作</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                Thread.currentThread().interrupt();</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                lock.unlock(); <span class="comment">// 释放独占锁</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testExclusiveLock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ExclusiveLockDemo</span> <span class="variable">demo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ExclusiveLockDemo</span>();</span><br><span class="line">        <span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> demo::criticalSection;</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程A&quot;</span>);</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程B&quot;</span>);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点</strong></p>
+<p>适用于<strong>需要保证数据一致性</strong>的场景，如数据库更新、临界区操作。<br>吞吐量较低**，因为同一时间只能有一个线程访问资源，可能导致其他线程长时间等待。</p>
+<h4 id="10-3-2-共享锁"><a href="#10-3-2-共享锁" class="headerlink" title="10.3.2 共享锁"></a>10.3.2 共享锁</h4><p><strong>概念</strong></p>
+<ul>
+<li><strong>共享锁</strong>（又称<strong>读锁</strong>），指的是多个线程可以<strong>同时获取该锁进行读取</strong>，但如果有线程申请写操作（独占锁），则所有共享锁会被阻塞。</li>
+<li>典型应用：<code>ReentrantReadWriteLock</code> 的 <strong>readLock()</strong>、数据库 <code>SELECT ... LOCK IN SHARE MODE</code>。</li>
+</ul>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 共享锁</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SharedLockDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">ReentrantReadWriteLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantReadWriteLock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">readOperation</span><span class="params">()</span> &#123;</span><br><span class="line">        lock.readLock().lock(); <span class="comment">// 共享锁</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 获取共享锁，执行读取操作...&quot;</span>);</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.readLock().unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSharedLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">SharedLockDemo</span> <span class="variable">demo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SharedLockDemo</span>();</span><br><span class="line">    <span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> demo::readOperation;</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程A&quot;</span>);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程B&quot;</span>);</span><br><span class="line"></span><br><span class="line">    t1.start();</span><br><span class="line">    t2.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>特点</strong></p>
+<p><strong>并发能力强</strong>，多个线程可同时读取数据，提高吞吐量。<br><strong>不能写入数据</strong>，如果需要写操作，需要升级为独占锁。</p>
+<h3 id="10-4-可重入锁"><a href="#10-4-可重入锁" class="headerlink" title="10.4 可重入锁"></a>10.4 可重入锁</h3><p><strong>概念</strong></p>
+<p><strong>可重入锁</strong>，又称为<strong>递归锁</strong>，是一种可以由同一线程多次获取的锁。在该锁机制下，如果一个线程已经获取了锁，它可以再次获取该锁而不会发生死锁。这种锁允许同一线程在不同的代码段中多次获得锁，并且每次获取锁时都需要调用 <code>unlock()</code> 释放锁的次数才能真正释放锁。</p>
+<p><strong>特点</strong></p>
+<ol>
+<li><strong>同一线程多次获得锁不会发生死锁</strong>。</li>
+<li>每当线程获取锁时，锁的内部计数器会增加，<code>unlock()</code> 被调用时，计数器减少，直到计数器为 0 时才会真正释放锁。</li>
+<li><strong>提高代码的可重入性</strong>，避免因同一线程在多个地方加锁时出现死锁或无法正常解锁的情况。</li>
+</ol>
+<p><strong>实现原理</strong></p>
+<ul>
+<li>可重入锁通过为每个线程<strong>记录锁的持有次数</strong>来实现。当一个线程第一次获得锁时，锁的计数器值为 1。当同一线程再次请求该锁时，计数器值会增加。只有当锁的计数器值归零时，锁才会被释放。</li>
+</ul>
+<p><strong>示例代码</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可重入锁</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReentrantLockDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 方法A，调用方法B</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">methodA</span><span class="params">()</span> &#123;</span><br><span class="line">        lock.lock(); <span class="comment">// 第一次获取锁</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 获取了锁，执行方法A&quot;</span>);</span><br><span class="line">            methodB(); <span class="comment">// 调用方法B</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock(); <span class="comment">// 解锁</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 方法B</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">methodB</span><span class="params">()</span> &#123;</span><br><span class="line">        lock.lock(); <span class="comment">// 第二次获取锁</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 获取了锁，执行方法B&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock(); <span class="comment">// 解锁</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testReentrantLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">ReentrantLockDemo</span> <span class="variable">demo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLockDemo</span>();</span><br><span class="line">    demo.methodA();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong></p>
+<ul>
+<li>在上述代码中，<code>methodA()</code> 获取了锁，并在执行过程中调用了 <code>methodB()</code>。由于 <code>methodB()</code> 中也请求了相同的锁，但是同一个线程 <code>main</code> 在同一个锁上重复请求时，锁并不会阻塞自己。</li>
+<li>这种行为在没有可重入锁的情况下是不可行的，可能会导致死锁。</li>
+</ul>
+<p><strong>常见可重入锁实现</strong></p>
+<ol>
+<li><strong><code>ReentrantLock</code></strong>：<ul>
+<li><code>ReentrantLock</code> 是一种显式锁，支持可重入，并且提供比 <code>synchronized</code> 更强大的锁定控制，例如 <strong>公平性</strong>（公平锁）和 <strong>非公平性</strong>（非公平锁）的选择。</li>
+</ul>
+</li>
+<li><strong><code>synchronized</code></strong>：<ul>
+<li>Java 的内置锁机制（<code>synchronized</code>）本质上也是可重入的。即同一线程可以多次进入同步代码块而不被阻塞。</li>
+</ul>
+</li>
+</ol>
+<h3 id="10-5-自旋锁"><a href="#10-5-自旋锁" class="headerlink" title="10.5 自旋锁"></a>10.5 自旋锁</h3><p><strong>概念</strong></p>
+<p><strong>自旋锁</strong> 是一种通过反复检查某个条件是否满足而等待的锁机制。在自旋锁中，当一个线程试图获取锁时，如果锁已经被其他线程占用，线程不会被挂起或休眠，而是会在循环中“自旋”反复检查锁的状态。这种自旋操作可以减少上下文切换的开销，适用于锁持有时间非常短的场景。</p>
+<p>自旋锁是一种轻量级的锁，它不像传统的阻塞锁（如 <code>ReentrantLock</code>）那样会将线程挂起，而是通过忙等待（不断轮询）来判断锁是否可用。</p>
+<p><strong>自旋锁的特点</strong></p>
+<ul>
+<li><strong>无阻塞</strong>：线程不会进入操作系统的调度队列，而是会持续检查锁的状态，直到成功获取锁。</li>
+<li><strong>忙等待</strong>：线程会不断消耗 CPU 资源，执行一个短时间的自旋。</li>
+<li><strong>适用场景</strong>：适合锁持有时间非常短的场景，避免了线程阻塞和唤醒的开销。</li>
+<li><strong>性能消耗</strong>：自旋锁本身消耗 CPU 资源，因此不适用于锁持有时间长或竞争严重的情况。</li>
+</ul>
+<p><strong>示例代码</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自旋锁</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpinLock</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>; <span class="comment">// 锁标志，false表示没有锁，true表示有锁</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">lock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!flag) &#123;</span><br><span class="line">                <span class="keyword">if</span> (compareAndSet(<span class="literal">false</span>, <span class="literal">true</span>)) &#123; <span class="comment">// 比较并设置标志位</span></span><br><span class="line">                    <span class="keyword">return</span>; <span class="comment">// 成功获取锁</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">unlock</span><span class="params">()</span> &#123;</span><br><span class="line">        flag = <span class="literal">false</span>; <span class="comment">// 释放锁</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用CAS（Compare And Swap）进行锁状态的原子操作</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">compareAndSet</span><span class="params">(<span class="type">boolean</span> expected, <span class="type">boolean</span> newValue)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (flag == expected) &#123;</span><br><span class="line">            flag = newValue;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSpinLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">SpinLock</span> <span class="variable">spinLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SpinLock</span>();</span><br><span class="line"></span><br><span class="line">    <span class="type">Runnable</span> <span class="variable">task</span> <span class="operator">=</span> () -&gt; &#123;</span><br><span class="line">        spinLock.lock(); <span class="comment">// 获取锁</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 获取锁，执行操作...&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>); <span class="comment">// 模拟操作</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                Thread.currentThread().interrupt();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            spinLock.unlock(); <span class="comment">// 释放锁</span></span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot; 释放锁&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程A&quot;</span>);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(task, <span class="string">&quot;线程B&quot;</span>);</span><br><span class="line"></span><br><span class="line">    t1.start();</span><br><span class="line">    t2.start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong></p>
+<ul>
+<li>在上述示例中，<code>SpinLock</code> 类实现了一个简单的自旋锁。通过 <code>flag</code> 变量控制锁的状态。当 <code>lock()</code> 被调用时，线程会通过 <code>compareAndSet()</code> 方法检查并设置 <code>flag</code>，如果锁未被占用，则成功获取锁并进入临界区。</li>
+<li>这个示例展示了一个典型的自旋锁操作，线程会不断自旋，直到成功获取锁。</li>
+</ul>
 </div>
     </div>
 
