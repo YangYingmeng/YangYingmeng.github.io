@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="description" content="一、Java并发编程-Java并发包源码" />
+    <meta name="hexo-theme-A4" content="v1.9.7" />
+    <link rel="alternate icon" type="image/webp" href="/img/avatar.png">
+    <title>Ethan-逐道日记 | true</title>
+
+    
+        
+<link rel="stylesheet" href="/css/highlight/style1.css">
+
+        
+<link rel="stylesheet" href="/css/reset.css">
+
+        
+<link rel="stylesheet" href="/css/markdown.css">
+
+        
+<link rel="stylesheet" href="/css/fonts.css">
+ 
+         <!--注意：首页既不是post也不是page-->
+        
+        
+        
+<link rel="stylesheet" href="/css/ui.css">
+ 
+        
+<link rel="stylesheet" href="/css/style.css">
+
+
+        
+            <!--返回顶部css-->
+            
+<link rel="stylesheet" href="/css/returnToTop.css">
+
+            
+<link rel="stylesheet" href="/css/unicons.css">
+
+        
+        
+            <!--目录-->
+            
+<link rel="stylesheet" href="/css/toc.css">
+
+        
+    
+
+    
+        
+<link rel="stylesheet" href="/css/returnToLastPage.css">
+
+    
+    
+   
+<link rel="stylesheet" href="/css/lightgallery-bundle.min.css">
+
+
+   
+        
+<link rel="stylesheet" href="/css/custom.css">
+
+    
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+    
+    
+        <style>
+            .index-main{
+                max-width:  1200px;
+            }
+        </style>
+
+    
+    
+
+
+
+    
+
+    
+    
+
+
+
+
+    
+    
+    
+    <body>
+        <script src="/js/darkmode-js.min.js"></script>
+        
+        <script>
+            const options = {
+                bottom: '40px', // default: '32px'
+                right: 'unset', // default: '32px'
+                left: '42px', // default: 'unset'
+                time: '0.3s', // default: '0.3s'
+                mixColor: '#fff', // default: '#fff'
+                backgroundColor: ' #e4e4e4 ',  // default: '#fff'
+                buttonColorDark: '#100f2c',  // default: '#100f2c'
+                buttonColorLight: '#fff', // default: '#fff'
+                saveInCookies: true, // default: true,
+                label: '🌓', // default: ''
+                autoMatchOsTheme: true // default: true
+            }
+            const darkmode = new Darkmode(options);
+            darkmode.showWidget();
+        </script>
+        
+        
+            <div class="left-toc-container">
+                <nav id="toc" class="bs-docs-sidebar"></nav>
+            </div>
+        
+        <div class="paper">
+            
+            
+            
+            
+                <div class="shadow-drop-2-bottom paper-main">
+                    
+
+    <div class="index-header-line" >
+        <div id="hiddenHeaderContentArray" style="display: none;">
+            
+            
+            
+                <span>Your only limit is your mind.</span>
+            
+        </div>
+        <span id="targetSpan"></span>
+    </div>
+
+
+<div class="header">
+    <div class="header-container">
+        <style>
+            .header-img {
+                width: 56px;
+                height: auto;
+                object-fit: cover; /* 保持图片比例 */
+                transition: transform 0.3s ease-in-out; 
+                border-radius: 0; 
+            }
+            
+        </style>
+        <img 
+            alt="^-^" 
+            cache-control="max-age=86400" 
+            class="header-img" 
+            src="/img/avatar.png" 
+        />
+        <div class="header-content">
+            <a class="logo" href="/">Ethan-逐道日记</a> 
+            <span class="description">逐有道无术之道</span> 
+        </div>
+    </div>
+    
+   
+    <ul class="nav">
+        
+            
+                <li><a href="/">首页</a></li>
+            
+        
+            
+                <li><a href="/list/">文章</a></li>
+            
+        
+            
+                <li><a href="/tags/">标签</a></li>
+            
+        
+            
+                <li><a href="/categories/">分类</a></li>
+            
+        
+    </ul>
+</div> 
+        
+                    
+                    
+
+                    
+                    
+                    
+                    <!--说明是文章post页面-->
+                    
+                        <div class="post-main">
+    
+
+    
+        
+            
+                <div class="post-main-title" style="text-align: center;">
+                    一、Java并发编程-Java并发包源码
+                </div>
+            
+        
+      
+    
+
+    
+
+        
+            <div class="post-head-meta-center">
+        
+                
+                    <span>最近更新：2025-03-19</span> 
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                     <span>字数总计：3.1k</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span>阅读估时：13分钟</span>
+                
+                
+                    
+                        &nbsp; | &nbsp;
+                    
+                    <span id="busuanzi_container_page_pv">
+                        阅读量：<span id="busuanzi_value_page_pv"></span>次
+                    </span>
+                
+            </div>
+    
+
+    <div class="post-md">
+        
+            
+        
+        <div class=".article-gallery"><h1 id="1-ThreadLocalRandom类原理剖析"><a href="#1-ThreadLocalRandom类原理剖析" class="headerlink" title="1. ThreadLocalRandom类原理剖析"></a>1. ThreadLocalRandom类原理剖析</h1><h2 id="1-1-Random类及其局限性"><a href="#1-1-Random类及其局限性" class="headerlink" title="1.1 Random类及其局限性"></a>1.1 Random类及其局限性</h2><p>在 Java 中，<code>Random</code> 类用于生成伪随机数，其核心原理是基于种子（Seed）的计算。</p>
+<h3 id="1-1-1-使用示例"><a href="#1-1-1-使用示例" class="headerlink" title="1.1.1 使用示例"></a>1.1.1 使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testRandom</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Random</span> <span class="variable">random</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 随机输出10个0~5之间的随机数</span></span><br><span class="line">        System.out.println(random.nextInt(<span class="number">5</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在单线程环境下，每次调用 <code>nextInt()</code> 都会基于 <strong>前一次的种子值</strong> 计算新的种子，从而生成随机数。然而，在多线程环境下，<code>Random</code> 可能会遇到<strong>种子竞争</strong>问题，导致不同线程生成相同的随机数。</p>
+<h3 id="1-1-2-工作机制"><a href="#1-1-2-工作机制" class="headerlink" title="1.1.2  工作机制"></a>1.1.2  工作机制</h3><p><code>nextInt(int bound)</code> 方法的实现逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">nextInt</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 参数校验</span></span><br><span class="line">    <span class="keyword">if</span> (bound &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(BadBound);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 计算新的种子值</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> next(<span class="number">31</span>);</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> bound - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 计算随机数</span></span><br><span class="line">    <span class="keyword">if</span> ((bound &amp; m) == <span class="number">0</span>) &#123;  <span class="comment">// bound 是否为 2 的幂</span></span><br><span class="line">        r = (<span class="type">int</span>) ((bound * (<span class="type">long</span>) r) &gt;&gt; <span class="number">31</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">int</span> u;</span><br><span class="line">        <span class="keyword">while</span> ((u = next(<span class="number">31</span>)) - (r = u % bound) + m &lt; <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <strong>单线程环境</strong> 下，这种方式可以保证较好的随机性。但是在 <strong>多线程环境</strong> 下，多个线程可能会<strong>同时读取相同的种子值</strong>，然后执行步骤 2 计算新的种子，这会导致多个线程生成<strong>相同的随机数</strong>。</p>
+<p>为了解决这个问题，Java 采用 <strong>CAS（Compare And Swap）</strong> 机制来确保每次只有一个线程能成功更新种子，其他线程必须重新获取新的种子后再计算随机数。</p>
+<h3 id="1-1-3-线程安全性"><a href="#1-1-3-线程安全性" class="headerlink" title="1.1.3 线程安全性"></a>1.1.3 线程安全性</h3><p><code>Random</code> 使用 <code>AtomicLong</code> 变量存储种子，并通过 <code>CAS</code> 操作保证多线程环境下的随机性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="type">int</span> <span class="title function_">next</span><span class="params">(<span class="type">int</span> bits)</span> &#123;</span><br><span class="line">    <span class="type">long</span> nextseed;</span><br><span class="line">    <span class="type">AtomicLong</span> <span class="variable">seed</span> <span class="operator">=</span> <span class="built_in">this</span>.seed;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 读取当前种子值</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">oldseed</span> <span class="operator">=</span> seed.get();</span><br><span class="line">        <span class="comment">// 2. 计算新的种子</span></span><br><span class="line">        nextseed = (oldseed * multiplier + addend) &amp; mask;</span><br><span class="line">        <span class="comment">// 3. CAS 操作更新种子</span></span><br><span class="line">    &#125; <span class="keyword">while</span> (!seed.compareAndSet(oldseed, nextseed));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 4. 生成随机数</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="type">int</span>) (nextseed &gt;&gt;&gt; (<span class="number">48</span> - bits));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在多线程环境下：</p>
+<ol>
+<li>线程 A 读取 <code>oldseed</code>，计算 <code>nextseed</code>，尝试更新种子。</li>
+<li>线程 B 也可能读取相同的 <code>oldseed</code>，计算 <code>nextseed</code>，但在 <code>CAS</code> 操作时可能失败。</li>
+<li>失败的线程会重新获取新的 <code>oldseed</code> 并重新计算，直到 <code>CAS</code> 操作成功。</li>
+</ol>
+<p>通过这种方式，<code>Random</code> 确保了种子的唯一性，从而避免多个线程生成相同的随机数。</p>
+<p>虽然 <code>Random</code> 使用了 CAS 机制，但在高并发环境下仍然可能导致<strong>大量线程竞争同一个种子变量</strong>，自旋影响性能。</p>
+<h2 id="1-2-ThreadLocalRandom"><a href="#1-2-ThreadLocalRandom" class="headerlink" title="1.2 ThreadLocalRandom"></a>1.2 ThreadLocalRandom</h2><p><code>ThreadLocalRandom</code> 是 Java 7 引入的一个随机数生成类，专门为多线程环境设计，它通过为每个线程提供独立的随机数生成器来避免线程间的竞争，从而提高了在多线程场景下的性能。</p>
+<h3 id="1-2-1-使用示例"><a href="#1-2-1-使用示例" class="headerlink" title="1.2.1 使用示例"></a>1.2.1 使用示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testThreadLocalRandom</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 生成 0~5 之间的随机整数</span></span><br><span class="line">        System.out.println(ThreadLocalRandom.current().nextInt(<span class="number">5</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocalRandom.current()</code> 获取当前线程的 <code>ThreadLocalRandom</code> 实例。</p>
+<p><code>nextInt(int bound)</code> 用来生成一个指定范围的随机整数。</p>
+<h3 id="1-2-2-源码解释"><a href="#1-2-2-源码解释" class="headerlink" title="1.2.2 源码解释"></a>1.2.2 源码解释</h3><ol>
+<li><p><code>ThreadLocalRandom.current()</code> 方法解析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ThreadLocalRandom <span class="title function_">current</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (U.getInt(Thread.currentThread(), PROBE) == <span class="number">0</span>)</span><br><span class="line">        localInit();</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的实现主要包含两部分：<strong><code>U.getInt()</code></strong> 和 <strong><code>localInit()</code></strong>。下面是对每一部分的详细分析。</p>
+<ol>
+<li><p>U.getInt(Thread.currentThread(), PROBE)</p>
+<p><code>U.getInt()</code> 是 <code>sun.misc.Unsafe</code> 类的一个方法，用于通过 <strong>Unsafe API</strong> 获取线程的某个字段的值。在这里，它获取当前线程的 <code>PROBE</code> 字段。</p>
+<ul>
+<li><code>PROBE</code> 是一个线程局部变量（由 <code>ThreadLocal</code> 实现），用来表示该线程的状态，通常它用来做初始化检查或标记。</li>
+<li><strong><code>U.getInt(Thread.currentThread(), PROBE)</code></strong> 返回当前线程的 <code>PROBE</code> 值。如果值为 <code>0</code>，说明该线程尚未完成初始化，因此需要进行初始化操作。</li>
+</ul>
+<p><strong>作用</strong>：</p>
+<ul>
+<li>它的作用是检查当前线程是否已经初始化过 <code>ThreadLocalRandom</code>。如果当前线程没有初始化（<code>PROBE == 0</code>），则会调用 <code>localInit()</code> 来进行初始化。</li>
+</ul>
+</li>
+<li><p>localInit()</p>
+<p><code>localInit()</code> 是用来初始化线程局部随机数生成器的关键方法，它为每个线程分配唯一的随机种子和标识符：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">localInit</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">p</span> <span class="operator">=</span> probeGenerator.addAndGet(PROBE_INCREMENT);  <span class="comment">// 获取下一个 probe 值</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">probe</span> <span class="operator">=</span> (p == <span class="number">0</span>) ? <span class="number">1</span> : p; <span class="comment">// skip 0，避免 probe 值为 0</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">seed</span> <span class="operator">=</span> mix64(seeder.getAndAdd(SEEDER_INCREMENT));  <span class="comment">// 生成并获取新的种子</span></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    U.putLong(t, SEED, seed);  <span class="comment">// 将种子值存储到当前线程的 SEED 字段中</span></span><br><span class="line">    U.putInt(t, PROBE, probe);  <span class="comment">// 将 probe 值存储到当前线程的 PROBE 字段中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><p><code>next()</code> 方法</p>
+<p>当调用 <code>nextInt(bound)</code> 方法时，<code>ThreadLocalRandom</code> 会基于当前线程的种子生成一个符合条件的随机整数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">nextInt</span><span class="params">(<span class="type">int</span> bound)</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 参数检查</span></span><br><span class="line">    <span class="keyword">if</span> (bound &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;bound must be positive&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 生成随机数</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> mix32(nextSeed());</span><br><span class="line">    <span class="comment">// 3. 优化bound为2的幂次方时的处理</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> bound - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> ((bound &amp; m) == <span class="number">0</span>)</span><br><span class="line">        r &amp;= m;</span><br><span class="line">    <span class="comment">// 4. 处理非2的幂次方时</span></span><br><span class="line">    <span class="keyword">else</span> &#123; <span class="comment">// If not a power of two, reject over-represented candidates</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">u</span> <span class="operator">=</span> r &gt;&gt;&gt; <span class="number">1</span>; u + m - (r = u % bound) &lt; <span class="number">0</span>; u = mix32(nextSeed()) &gt;&gt;&gt; <span class="number">1</span>)</span><br><span class="line">            ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>相对于Random类优点</strong></p>
+<ul>
+<li><strong>每个线程独立的种子</strong>：每个线程通过 <code>ThreadLocal</code> 存储自己的种子，避免了线程之间的竞争和冲突。传统的 <code>Random</code> 类在多线程环境下会因为共享种子而导致多个线程产生相同的随机数，而 <code>ThreadLocalRandom</code> 则消除了这种问题。</li>
+<li><strong>避免了锁竞争</strong>：传统的 <code>Random</code> 类如果在多线程环境下使用，需要同步机制来保证线程安全，导致多个线程可能会在访问时自旋等待（例如，<code>Random</code> 通过 <code>synchronized</code> 来控制对种子的更新）。而 <code>ThreadLocalRandom</code> 则通过 <code>ThreadLocal</code> 为每个线程提供独立的种子，因此避免了自旋等待和同步带来的性能损耗。</li>
+<li><strong>提高并发性能</strong>：每个线程使用独立的随机数种子，可以并行生成随机数，避免了线程间的相互干扰和锁竞争，从而提高了并发性能。在高并发场景下，<code>ThreadLocalRandom</code> 的性能比传统的 <code>Random</code> 类要好得多。</li>
+<li><strong>种子的初始化</strong>：<code>ThreadLocalRandom</code> 在每个线程第一次使用时会自动初始化种子，并将种子保存在当前线程的本地变量中，这样后续的随机数生成都可以基于该线程自己的种子进行。</li>
+</ul>
+<h1 id="2-原子操作类原理解析"><a href="#2-原子操作类原理解析" class="headerlink" title="2. 原子操作类原理解析"></a>2. 原子操作类原理解析</h1><p>在 Java 的并发编程中，<code>java.util.concurrent.atomic</code> 包提供了一组基于 CAS（Compare-And-Swap）操作的原子类，它们在无锁环境下保证了线程安全性。</p>
+<h2 id="2-1-AtomicInteger-使用及源码解析"><a href="#2-1-AtomicInteger-使用及源码解析" class="headerlink" title="2.1 AtomicInteger 使用及源码解析"></a>2.1 AtomicInteger 使用及源码解析</h2><h3 id="2-1-1-用法举例"><a href="#2-1-1-用法举例" class="headerlink" title="2.1.1 用法举例"></a>2.1.1 用法举例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过构造器赋value值</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">AtomicInteger</span> <span class="variable">count</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAtomicInteger</span> <span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 创建10个线程，每个线程执行1000次自增</span></span><br><span class="line">    Thread[] threads = <span class="keyword">new</span> <span class="title class_">Thread</span>[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">        threads[i] = <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++) &#123;</span><br><span class="line">                count.incrementAndGet(); <span class="comment">// 线程安全的自增</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        threads[i].start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程执行完</span></span><br><span class="line">    <span class="keyword">for</span> (Thread thread : threads) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            thread.join();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输出最终计数值，理论上应该是 10000</span></span><br><span class="line">    System.out.println(<span class="string">&quot;最终计数值: &quot;</span> + count.get());</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-2-源码解析"><a href="#2-1-2-源码解析" class="headerlink" title="2.1.2 源码解析"></a>2.1.2 源码解析</h3><h4 id="2-1-2-1-核心成员变量"><a href="#2-1-2-1-核心成员变量" class="headerlink" title="2.1.2.1 核心成员变量"></a>2.1.2.1 核心成员变量</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Unsafe</span> <span class="variable">U</span> <span class="operator">=</span> Unsafe.getUnsafe();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> VALUE;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        VALUE = U.objectFieldOffset</span><br><span class="line">            (AtomicInteger.class.getDeclaredField(<span class="string">&quot;value&quot;</span>));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ex) &#123; <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(ex); &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">int</span> value;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">AtomicInteger</span><span class="params">(<span class="type">int</span> initialValue)</span> &#123;</span><br><span class="line">    value = initialValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解析</strong></p>
+<ul>
+<li><p><code>U</code>：通过 <code>Unsafe</code> 实现底层内存操作。Unsafe直接使用需要判断调用类是否由<strong>Bootstrap ClassLoader</strong> 加载, 而<code>AtomicInteger</code> 及 <code>Unsafe</code> 属于 <code>java.base</code> 模块，而 <code>java.base</code> 里的类是由 <strong>引导类加载器（Bootstrap ClassLoader）</strong> 加载的, 所以此处可以直接调用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title function_">getUnsafe</span><span class="params">()</span> &#123;</span><br><span class="line">    Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">    <span class="comment">// 判断是否是 Bootstrap ClassLoader 加载</span></span><br><span class="line">    <span class="keyword">if</span> (!VM.isSystemDomainLoader(caller.getClassLoader()))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">SecurityException</span>(<span class="string">&quot;Unsafe access denied&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> theUnsafe;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>value</code>：真正存储数据的 <code>volatile</code> 变量，保证可见性。在构造时可以赋默认值</p>
+</li>
+<li><p><code>VALUE</code>：记录 <code>value</code> 字段在 <code>AtomicInteger</code> 对象内存中的偏移量，供 <code>CAS</code> 操作使用。</p>
+</li>
+</ul>
+<h4 id="2-1-2-2-getAndIncrement"><a href="#2-1-2-2-getAndIncrement" class="headerlink" title="2.1.2.2  getAndIncrement()"></a>2.1.2.2  <code>getAndIncrement()</code></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">getAndIncrement</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> U.getAndAddInt(<span class="built_in">this</span>, VALUE, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@HotSpotIntrinsicCandidate</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">getAndAddInt</span><span class="params">(Object o, <span class="type">long</span> offset, <span class="type">int</span> delta)</span> &#123;</span><br><span class="line">    <span class="type">int</span> v;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">      v = getIntVolatile(o, offset);</span><br><span class="line">    &#125; <span class="keyword">while</span> (!weakCompareAndSetInt(o, offset, v, v + delta));</span><br><span class="line">      <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解析</strong></p>
+<ul>
+<li><p><code>Unsafe.getAndAddInt</code>:</p>
+<ul>
+<li>使用 <code>CAS</code> 进行原子加法。</li>
+<li>保证多个线程并发执行时，不会发生数据竞争。</li>
+</ul>
+</li>
+<li><p><strong>性能优化</strong>：</p>
+<p>避免 <code>synchronized</code> 造成的线程阻塞，提高效率。</p>
+</li>
+<li><p><strong>缺点</strong></p>
+<p>高并发的场景下, 多个线程竞争更新同一个原子变量, 只有一个线程CAS会成功, 大量线程在竞争失败后会自旋尝试CAS操作, 浪费性能。</p>
+</li>
+</ul>
+<h2 id="2-2-LongAdder-使用及源码解析"><a href="#2-2-LongAdder-使用及源码解析" class="headerlink" title="2.2 LongAdder 使用及源码解析"></a>2.2 LongAdder 使用及源码解析</h2><h3 id="2-2-1-用法举例"><a href="#2-2-1-用法举例" class="headerlink" title="2.2.1 用法举例"></a>2.2.1 用法举例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">LongAdder</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LongAdder</span>();</span><br><span class="line"></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testLongAdder</span> <span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">threadCount</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">incrementsPerThread</span> <span class="operator">=</span> <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    Thread[] threads = <span class="keyword">new</span> <span class="title class_">Thread</span>[threadCount];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; threadCount; i++) &#123;</span><br><span class="line">        threads[i] = <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; incrementsPerThread; j++) &#123;</span><br><span class="line">                counter.increment(); <span class="comment">// 线程安全的自增</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        threads[i].start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 等待所有线程执行完毕</span></span><br><span class="line">    <span class="keyword">for</span> (Thread thread : threads) &#123;</span><br><span class="line">        thread.join();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取最终结果</span></span><br><span class="line">    System.out.println(<span class="string">&quot;最终计数值: &quot;</span> + counter.sum()); <span class="comment">// 预期是 10000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-2-源码解析"><a href="#2-2-2-源码解析" class="headerlink" title="2.2.2 源码解析"></a>2.2.2 源码解析</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LongAdder</span> <span class="keyword">extends</span> <span class="title class_">Striped64</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 维护的基础值，在低并发时直接更新</span></span><br><span class="line">    <span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="type">long</span> base;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 维护的 Cell 数组，在高并发时用于分散竞争</span></span><br><span class="line">    <span class="keyword">transient</span> <span class="keyword">volatile</span> Cell[] cells;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 累加指定值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(<span class="type">long</span> x)</span> &#123;</span><br><span class="line">        Cell[] cs; <span class="type">long</span> b, v; <span class="type">int</span> m; Cell c;</span><br><span class="line">        <span class="comment">// 尝试直接更新 base 变量，失败（高并发或已经初始化 cells[]）则进入细粒度处理</span></span><br><span class="line">        <span class="keyword">if</span> ((cs = cells) != <span class="literal">null</span> || !casBase(b = base, b + x)) &#123;</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">uncontended</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (cs == <span class="literal">null</span> || (m = cs.length - <span class="number">1</span>) &lt; <span class="number">0</span> ||</span><br><span class="line">                (c = cs[getProbe() &amp; m]) == <span class="literal">null</span> ||</span><br><span class="line">                !(uncontended = c.cas(v = c.value, v + x))) &#123;</span><br><span class="line">                <span class="comment">// 进入 longAccumulate 方法，进一步处理冲突或扩容 cells[]</span></span><br><span class="line">                longAccumulate(x, <span class="literal">null</span>, uncontended);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 递增 1</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">        add(<span class="number">1L</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 递减 1</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">decrement</span><span class="params">()</span> &#123;</span><br><span class="line">        add(-<span class="number">1L</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算当前总和</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">sum</span><span class="params">()</span> &#123;</span><br><span class="line">        Cell[] cs = cells;</span><br><span class="line">        <span class="type">long</span> <span class="variable">sum</span> <span class="operator">=</span> base;</span><br><span class="line">        <span class="keyword">if</span> (cs != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Cell c : cs) &#123;</span><br><span class="line">                <span class="keyword">if</span> (c != <span class="literal">null</span>) sum += c.value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cell 类：用于存储分段计数值，继承 AtomicLong 并添加缓存填充</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@sun</span>.misc.Contended</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Cell</span> &#123;</span><br><span class="line">        <span class="keyword">volatile</span> <span class="type">long</span> value;</span><br><span class="line"></span><br><span class="line">        Cell(<span class="type">long</span> x) &#123;</span><br><span class="line">            value = x;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">boolean</span> <span class="title function_">cas</span><span class="params">(<span class="type">long</span> cmp, <span class="type">long</span> val)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> UNSAFE.compareAndSwapLong(<span class="built_in">this</span>, valueOffset, cmp, val);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> sun.misc.Unsafe UNSAFE;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> valueOffset;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">static</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                UNSAFE = sun.misc.Unsafe.getUnsafe();</span><br><span class="line">                valueOffset = UNSAFE.objectFieldOffset(Cell.class.getDeclaredField(<span class="string">&quot;value&quot;</span>));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a><strong>解析</strong></h3><ol>
+<li><p><strong>低并发时的优化</strong></p>
+<p>在 <strong>低并发</strong> 情况下，<code>LongAdder</code> 直接使用 <code>base</code> 变量进行 <code>CAS</code>（无锁原子操作）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((cs = cells) != <span class="literal">null</span> || !casBase(b = base, b + x)) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>cells == null</code>：表示当前竞争较少，还未启用 <code>cells[]</code> 机制。</li>
+<li><code>casBase(b = base, b + x)</code>：尝试直接更新 <code>base</code>，如果成功，说明无竞争，直接返回。</li>
+</ul>
+<p><strong>低并发时，<code>LongAdder</code> 采用 <code>AtomicLong</code> 类似的 <code>CAS</code> 机制，避免不必要的复杂操作，提高性能。</strong></p>
+</li>
+<li><p><strong>高并发时的优化</strong></p>
+<p>当多个线程同时更新 <code>LongAdder</code>，直接操作 <code>base</code> 会导致 <code>CAS</code> 失败，触发 <code>cells[]</code> 机制：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (cs == <span class="literal">null</span> || (m = cs.length - <span class="number">1</span>) &lt; <span class="number">0</span> ||</span><br><span class="line">    (c = cs[getProbe() &amp; m]) == <span class="literal">null</span> ||</span><br><span class="line">    !(uncontended = c.cas(v = c.value, v + x))) &#123;</span><br><span class="line">    longAccumulate(x, <span class="literal">null</span>, uncontended);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>具体优化点：</strong></p>
+<ol>
+<li><strong>线程哈希映射</strong><ul>
+<li><code>c = cs[getProbe() &amp; m]</code>：每个线程通过 <code>getProbe()</code> 计算索引，访问 <code>cells[]</code> 数组的某个 <code>Cell</code>，减少热点竞争。</li>
+</ul>
+</li>
+<li><strong><code>Cell</code> 机制</strong><ul>
+<li><code>Cell</code> 类类似 <code>AtomicLong</code>，但增加 <code>@sun.misc.Contended</code> 注解，防止 <strong>伪共享</strong>（多个 <code>Cell</code> 共享同一缓存行导致性能下降）。</li>
+</ul>
+</li>
+<li><strong>失败重试机制</strong><ul>
+<li><code>c.cas(v = c.value, v + x)</code> 失败时，会进入 <code>longAccumulate()</code> 进行 <strong>重新探测或扩容</strong>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>高并发时，<code>LongAdder</code> 采用 <code>cells[]</code> 进行分段累加，避免 <code>CAS</code> 失败造成的频繁重试。</strong></p>
+</li>
+<li><p><code>cells[]</code> 的扩容机制</p>
+<p>当 <code>cells[]</code> 竞争仍然激烈（即 <code>Cell.cas()</code> 失败多次），会进行扩容：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (cells.length &lt; NCPU) &#123;</span><br><span class="line">    expandCells();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>cells[]</code> <strong>初始化时大小为 2</strong>，随着冲突增加，<code>cells[]</code> 会 <strong>按 2 的指数增长</strong>，直到 <code>NCPU</code>（CPU 核心数）。</li>
+<li><strong>扩容后，线程会重新分布到新的 <code>Cell</code>，减少竞争。</strong></li>
+</ul>
+<p> <strong><code>cells[]</code> 采用懒加载 + 自适应扩容，减少内存开销，提高吞吐量。</strong></p>
+</li>
+</ol>
+</li>
+</ul>
+</div>
+    </div>
+
+    <div class="post-meta">
+        <i>
+        
+            <span>2023-04-15</span>
+            
+                <span>该篇文章被 Ethan</span>
+            
+            
+                <span>打上标签:
+                    
+                    
+                        <a href='/tags/Java/'>
+                            Java
+                        </a>
+                    
+                        <a href='/tags/JUC/'>
+                            JUC
+                        </a>
+                    
+                </span>
+             
+             
+                <span>归为分类:
+                    
+                    
+                        <a href='/categories/JUC/'>
+                            JUC
+                        </a>
+                    
+                </span>
+            
+        
+        </i>
+    </div>
+    <br>
+    
+    
+        
+            
+    
+            <div class="post-footer-pre-next">
+                
+
+                
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2023/04/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_02/">二、Java并发编程-并发基础</a>
+                    </span>
+                
+            </div>
+    
+        
+    
+
+    
+        
+
+     
+</div>
+
+
+
+                                      
+                    
+                    
+                    <div class="footer">
+    
+        <span> 
+            © 1949-2025 China 
+
+            
+                
+
+            
+                
+                    / <a href="/contact/"> 联系 </a>
+                
+
+            
+                
+                    / <a href="/support/"> 支持 </a>
+                
+
+            
+        </span>
+       
+    
+</div>
+
+
+
+<!--这是指一条线往下的内容-->
+<div class="footer-last">
+    
+            <span>✨&#34;The only way to achieve the impossible is to believe it is possible.&#34; ✨</span>
+            
+    
+</div>
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!--目录-->
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tocify/1.9.0/javascripts/jquery.tocify.min.js" type="text/javascript" ></script>
+        
+<script src="/js/toc.js"></script>
+
+    
+
+    
+<script src="/js/randomHeaderContent.js"></script>
+
+    <!--回到顶部按钮-->
+    
+        
+<script src="/js/returnToTop.js"></script>
+
+    
+
+    
+        
+<script src="/js/returnToLastPage.js"></script>
+
+    
+
+
+
+
+
+<script src="/js/lightgallery/lightgallery.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-thumbnail.umd.min.js"></script>
+
+
+
+<script src="/js/lightgallery/plugins/lg-fullscreen.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-autoplay.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-zoom.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-rotate.umd.min.js"></script>
+
+
+<script src="/js/lightgallery/plugins/lg-paper.umd.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+     
+    if (typeof lightGallery !== "undefined") {
+        var options1 = {
+            selector: '.gallery-item',
+            plugins: [lgThumbnail, lgFullscreen, lgAutoplay, lgZoom, lgRotate, lgPager], // 启用插件
+            thumbnail: true,          // 显示缩略图
+            zoom: true,               // 启用缩放功
+            rotate: true,             // 启用旋转功能能
+            autoplay: true,        // 启用自动播放功能
+            fullScreen: true,      // 启用全屏功能
+            pager: false, //页码,
+            zoomFromOrigin: true,   // 从原始位置缩放
+            actualSize: true,       // 启用查看实际大小的功能
+            enableZoomAfter: 300,    // 延迟缩放，确保图片加载完成后可缩放
+        };
+        lightGallery(document.getElementsByClassName('.article-gallery')[0], options1); // 修复选择器
+    }
+    
+</script>
+
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> 
+
+                </div>
+            
+            
+                <!-- 回到顶部的按钮-->  
+                <div class="progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+            
+                <!-- 返回的按钮-->  
+                <div class="return-to-last-progress-wrap shadow-drop-2-bottom">
+                    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
+                    </svg>
+                </div>
+            
+    </body>
+</html>

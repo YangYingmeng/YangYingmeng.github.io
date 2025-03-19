@@ -210,7 +210,7 @@
             <div class="post-head-meta-center">
         
                 
-                    <span>最近更新：2025-03-14</span> 
+                    <span>最近更新：2025-03-19</span> 
                 
                 
                     
@@ -239,7 +239,7 @@
         
             
         
-        <div class=".article-gallery"><h1 id="Java并发编程-线程基础"><a href="#Java并发编程-线程基础" class="headerlink" title="Java并发编程-线程基础"></a>Java并发编程-线程基础</h1><h2 id="1-什么是线程？"><a href="#1-什么是线程？" class="headerlink" title="1 什么是线程？"></a><strong>1 什么是线程？</strong></h2><p>在 Java 并发编程中，<strong>线程</strong>和<strong>进程</strong>是核心概念，它们决定了程序的执行方式：</p>
+        <div class=".article-gallery"><h1 id="Java并发编程-线程基础"><a href="#Java并发编程-线程基础" class="headerlink" title="Java并发编程-线程基础"></a>Java并发编程-线程基础</h1><h2 id="1-什么是线程？"><a href="#1-什么是线程？" class="headerlink" title="1. 什么是线程？"></a><strong>1. 什么是线程？</strong></h2><p>在 Java 并发编程中，<strong>线程</strong>和<strong>进程</strong>是核心概念，它们决定了程序的执行方式：</p>
 <ul>
 <li><strong>进程（Process）</strong>：程序在操作系统中的一次执行活动，是系统进行资源分配和调度的基本单位。每个进程都有独立的内存空间和系统资源。</li>
 <li><strong>线程（Thread）</strong>：线程是进程中的一个执行路径，一个进程至少包含一个线程。<strong>多个线程共享进程的资源</strong>，但每个线程都有自己的运行环境。</li>
@@ -248,7 +248,7 @@
 <p>操作系统在分配资源时，会将资源分配给<strong>进程</strong>，而 <strong>CPU 资源是直接分配给线程的</strong>，因此 <strong>线程才是 CPU 资源分配的基本单位</strong>。</p>
 </blockquote>
 <p>在 Java 中，当我们启动 <code>main</code> 方法时，实际上是启动了一个 <strong>JVM 进程</strong>，其中 <code>main</code> 方法所在的线程被称为<strong>主线程（Main Thread）</strong>。</p>
-<h2 id="2-进程与线程的内存结构"><a href="#2-进程与线程的内存结构" class="headerlink" title="2 进程与线程的内存结构"></a>2 进程与线程的内存结构</h2><p><a href="/../img/juc/01.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/01.jpg"></a></p>
+<h2 id="2-进程与线程的内存结构"><a href="#2-进程与线程的内存结构" class="headerlink" title="2. 进程与线程的内存结构"></a>2. 进程与线程的内存结构</h2><p><a href="/../img/juc/01.jpg" class="gallery-item" style="box-shadow: none;"> <img src="/../img/juc/01.jpg"></a></p>
 <p>从上图可以看出，一个进程可以包含多个线程，并且线程之间共享进程的部分内存结构：</p>
 <table>
 <thead>
@@ -275,7 +275,7 @@
 </tr>
 </tbody></table>
 <p>这些内存区域的划分有助于 JVM 实现高效的并发管理，同时避免线程之间的不必要干扰。</p>
-<h2 id="3-线程的基础API"><a href="#3-线程的基础API" class="headerlink" title="3 线程的基础API"></a>3 线程的基础API</h2><h3 id="3-1-创建与运行"><a href="#3-1-创建与运行" class="headerlink" title="3.1 创建与运行"></a>3.1 创建与运行</h3><p>在 Java 中，创建线程主要有三种方式：</p>
+<h2 id="3-线程的基础API"><a href="#3-线程的基础API" class="headerlink" title="3. 线程的基础API"></a>3. 线程的基础API</h2><h3 id="3-1-创建与运行"><a href="#3-1-创建与运行" class="headerlink" title="3.1 创建与运行"></a>3.1 创建与运行</h3><p>在 Java 中，创建线程主要有三种方式：</p>
 <ol>
 <li><p>继承 <code>Thread</code> 类</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">_01CreatThread</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">extendThread</span> <span class="keyword">extends</span> <span class="title class_">Thread</span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;通过继承Thread类创建线程&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">extendThread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">extendThread</span>();</span><br><span class="line">        <span class="comment">// 调用start后, 线程进入就绪态, 等待cpu调度</span></span><br><span class="line">        t1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -626,7 +626,7 @@
                 
 
                 
-                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2023/01/01/java%E9%9D%A2%E8%AF%95%E9%A2%98/">一、领域驱动设计-理论篇</a>
+                    <span class="post-footer-pre-next-last-span-right">下一篇：<a href="/2023/01/01/%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1_01/">一、领域驱动设计-理论篇</a>
                     </span>
                 
             </div>
