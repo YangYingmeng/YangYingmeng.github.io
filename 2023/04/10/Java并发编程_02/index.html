@@ -210,7 +210,7 @@
             <div class="post-head-meta-center">
         
                 
-                    <span>最近更新：2025-03-19</span> 
+                    <span>最近更新：2025-03-20</span> 
                 
                 
                     
@@ -516,7 +516,7 @@
 <li><strong>非公平锁</strong>：线程获取锁<strong>不考虑请求的顺序</strong>，可以直接尝试抢占锁，提高吞吐量。</li>
 </ul>
 <p>示例代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">java复制编辑<span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFairLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 创建公平锁</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">fairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">true</span>);</span><br><span class="line">    <span class="comment">// 创建非公平锁（默认）</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">unfairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFairLock</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 创建公平锁</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">fairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">true</span>);</span><br><span class="line">    <span class="comment">// 创建非公平锁（默认）</span></span><br><span class="line">    <span class="type">ReentrantLock</span> <span class="variable">unfairLock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -652,7 +652,7 @@
     
             <div class="post-footer-pre-next">
                 
-                    <span>上一篇：<a href='/2023/04/15/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_03/'>一、Java并发编程-Java并发包源码</a></span>
+                    <span>上一篇：<a href='/2023/04/15/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B_03/'>三、Java并发编程-ThreadLocalRandom CopyOnWriteArrayList 原子操作源码解析</a></span>
                 
 
                 
